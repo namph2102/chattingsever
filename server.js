@@ -9,14 +9,14 @@ import cookieParser from "cookie-parser";
 import { engine } from "express-handlebars";
 
 //* setting path
-import path from "path";
-import { dirname } from "node:path";
+import path from "node:path";
+import { dirname } from "path";
 import { fileURLToPath } from "url";
 import ConnectDatabase from "./src/servies/conectMongoose.js";
 import AllRouter from "./src/routing/index.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(fileURLToPath(import.meta.url));
-app.use(express.static(path.join(__dirname, "pulic")));
+app.use(express.static(path.join(__dirname, "public")));
 //*end setting path
 import compression from "compression";
 app.use(
@@ -38,7 +38,6 @@ function shouldCompress(req, res) {
 // app.set("views", "./views");
 // // sử dụng view engine
 
-console.log(__dirname);
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors());
@@ -70,6 +69,6 @@ io.on("connection", (socket) => {
     io.emit("danh_sach_online", listPeers);
   });
 });
-const PORT_NUMBER = process.env.PORT || 300;
+const PORT_NUMBER = process.env.PORT || 3000;
 //end socket io
 httpServer.listen(PORT_NUMBER);

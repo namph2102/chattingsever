@@ -9,7 +9,7 @@ import cookieParser from "cookie-parser";
 import { engine } from "express-handlebars";
 
 //* setting path
-import path from "node:path";
+import path from "path";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import ConnectDatabase from "./src/servies/conectMongoose.js";

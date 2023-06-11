@@ -45,4 +45,4 @@ router.get("/categorymv", ZingController.getCategoryMV);
 // getVideo
 router.get("/video", ZingController.getVideo);
 
-export default zingrouter;
+export default router;

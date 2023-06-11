@@ -66,6 +66,7 @@ class ZingController {
   }
 
   search(req, res) {
+    console.log(req.search);
     ZingMp3.search(req.query.keyword).then((data) => {
       res.json(data);
     });

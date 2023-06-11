@@ -10,7 +10,7 @@ import { engine } from "express-handlebars";
 
 //* setting path
 import path from "path";
-import { dirname } from "path";
+import { dirname } from "node:path";
 import { fileURLToPath } from "url";
 import ConnectDatabase from "./src/servies/conectMongoose.js";
 import AllRouter from "./src/routing/index.js";
@@ -32,11 +32,11 @@ function shouldCompress(req, res) {
   // fallback to standard filter function
   return compression.filter(req, res);
 }
-// sử dụng view engine
-app.engine(".hbs", engine({ extname: ".hbs" }));
-app.set("view engine", ".hbs");
-app.set("views", "./views");
-// sử dụng view engine
+// // sử dụng view engine
+// app.engine(".hbs", engine({ extname: ".hbs" }));
+// app.set("view engine", ".hbs");
+// app.set("views", "./views");
+// // sử dụng view engine
 
 console.log(__dirname);
 app.use(cookieParser());
@@ -70,6 +70,6 @@ io.on("connection", (socket) => {
     io.emit("danh_sach_online", listPeers);
   });
 });
-
+const PORT_NUMBER = process.env.PORT || 300;
 //end socket io
-httpServer.listen(3000);
+httpServer.listen(PORT_NUMBER);

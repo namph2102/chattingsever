@@ -17,7 +17,8 @@
     "zingmp3-api-full": "^1.0.14"
   },
   "scripts": {
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "start": "nodemon server.js"
   },
   "name": "backend",
   "version": "1.0.0",

@@ -1,6 +1,7 @@
 import pkg from "mongoose";
 const { Schema, model, models } = pkg;
 //permission   robot, member,admin
+//type login  web // facebook// google// github
 const userSchema = new Schema(
   {
     fullname: { type: String, required: true, lowercase: true },
@@ -18,7 +19,8 @@ const userSchema = new Schema(
     accessToken: { type: String, require: true },
     refreshToken: { type: String, require: true },
     follows: { type: Number, default: 0 },
-    address: { type: String, default: "hồ chí minh" },
+    uid: { type: String, default: "" },
+    address: { type: String, default: "Chưa cập nhập" },
     phone: { type: Number, default: 0 },
     email: { type: String, default: "" },
     friends: [{ type: Schema.Types.ObjectId, default: [], ref: "User" }],

@@ -48,7 +48,6 @@ class Usercontroller {
       const accessToken = EncodeHandle.generateToken(username, true);
       const refreshToken = EncodeHandle.generateToken(username, false);
       const passwordHash = await EncodeHandle.generatePassword(password);
-      createCookie(res, "refreshToken", refreshToken);
       const dataCreate = {
         username,
         password: passwordHash,
@@ -66,7 +65,7 @@ class Usercontroller {
         status: 201,
       });
     } catch (error) {
-      res.status(404).json({ message: error.message, status: 404 });
+      res.status(403).json({ message: error.message, status: 404 });
     }
   }
   async loginAccount(req, res) {
@@ -87,6 +86,7 @@ class Usercontroller {
           const listToken = await EncodeHandle.refreshToken(username);
           account.accessToken = listToken.accessToken;
           account.refreshToken = listToken.refreshToken;
+
           return res.status(200).json({
             account,
             status: "login oke",

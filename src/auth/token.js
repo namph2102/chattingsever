@@ -9,12 +9,20 @@ class EncodeHandle {
     let result;
 
     if (isAccessToken) {
-      result = sign({ username }, this.#accessToken, { expiresIn });
-    } else result = sign({ username }, this.#refreshToekn);
+      result = sign({ username }, this.#accessToken, { expiresIn: "30s" });
+    } else
+      result = sign({ username }, this.#refreshToekn, { expiresIn: "10d" });
     return result;
   }
   verifyToken(token) {
-    return verify(token, this.#accessToken);
+    return verify(token, this.#accessToken, (err, decoded) => {
+      if (err) {
+        if (err.message.includes("jwt expired"))
+          return { message: "Token hết hạn", status: -1 };
+        return { message: err.message, status: 0 };
+      }
+      return { message: "token chính xác", status: 1, ...decoded };
+    });
   }
   async generatePassword(password) {
     try {
@@ -35,7 +43,7 @@ class EncodeHandle {
   async refreshToken(username) {
     const accessToken = this.generateToken(username, true);
     const refreshToken = this.generateToken(username, false);
-    console.log("Refrestoken thành công");
+
     username &&
       (await UserModel.updateOne({ username }, { accessToken, refreshToken }));
     return { accessToken, refreshToken };

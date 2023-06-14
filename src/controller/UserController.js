@@ -9,15 +9,17 @@ class Usercontroller {
   }
   async handleSearch(req, res) {
     try {
-      const { search } = req.body;
+      const { search, listUserExtended } = req.body;
+
       if (!search) {
         throw new Error("Dữ liệu thiếu");
       }
       let listUserSearchs =
         (await UserModel.find({
           $text: { $search: search },
-        }).select("username fullname avatar")) || [];
-
+        })
+          .select("username fullname avatar status")
+          .sort({ follows: -1 })) || [];
       return res.status(200).json({
         listUserSearchs,
         status: 200,

@@ -12,3 +12,15 @@ Content-Type: application/json
 ###
 POST http://localhost:3000/user/firstlogin
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QxIiwiaWF0IjoxNjg2NjIzMzkyLCJleHAiOjE2ODY2MjM0MjJ9.jWvg7uWGryGq7qAIHUComvk0uNOh7cHXyEsYULQXX_8
+
+###
+
+POST http://localhost:3000/room/create
+Content-Type:  application/json
+
+{
+   "data": {
+    "accountid": "6487af6dbe3581b5e16f675c",
+    "personid": "6487af7ebe3581b5e16f675f"
+    }
+}

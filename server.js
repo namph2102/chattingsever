@@ -58,15 +58,8 @@ let handleSocket;
 io.on("connection", (socket) => {
   handleSocket = new handleSocketCall(socket);
 
-  socket.on("dang-ky", (data) => {
-    if (listPeers.some((user) => user.username == data.username)) {
-      socket.emit("xac-nhan-dang-ky");
-      return;
-    }
-    socket.username = data.username;
-    socket.peerid = data.id;
-    listPeers.push(data);
-    io.emit("danh_sach_online", listPeers);
+  socket.on("disconnect", () => {
+    console.log("disconnect", socket.id);
   });
 });
 const PORT_NUMBER = process.env.PORT || 3000;

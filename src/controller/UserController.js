@@ -17,6 +17,7 @@ class Usercontroller {
       let listUserSearchs =
         (await UserModel.find({
           $text: { $search: search },
+          _id: { $nin: listUserExtended },
         })
           .select("username fullname avatar status")
           .sort({ follows: -1 })) || [];

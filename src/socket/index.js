@@ -14,6 +14,8 @@ class handleSocketCall {
     });
 
     socket.on("user-chat", (data) => {
+      console.log(socket.currentroom);
+      if (!socket.currentroom) return;
       CommentModel.create({
         room: socket.currentroom,
         comment: data.comment,

@@ -45,14 +45,20 @@ class Usercontroller {
           _id: { $nin: listUserExtended },
         })
           .select("username fullname avatar status follows address friends")
-          .populate({ path: "follows", match: { _id: { $in: [listFriend] } } })
+          .populate({
+            path: "follows",
+            match: { _id: { $in: [listFriend] } },
+          })
+          .populate({ path: "friends", select: "avatar fullname" })
           .sort({ follows: -1 })) || [];
+
       return res.status(200).json({
         listUserSearchs,
         status: 200,
         messsage: "Tìm thấy user",
       });
     } catch (err) {
+      console.log(err.message);
       return res.status(404).json({ messgae: err.message, status: 404 });
     }
   }

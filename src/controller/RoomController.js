@@ -5,8 +5,9 @@ class RoomController {
   async getInfoRoom(req, res) {
     try {
       const { accountid, personid } = req.body.data;
+
       let room = await RoomModel.findOne({
-        listUser: { $in: [accountid, personid] },
+        listUser: { $all: [accountid, personid] },
       });
       if (!room) {
         room = await RoomModel.create({
@@ -17,6 +18,7 @@ class RoomController {
         UserModel.findById(personid, { $push: { rooms: room._id } });
       }
       const idRoom = room._id.toString() + "";
+      console.log(idRoom);
       const [listChatting = [], person] = await Promise.all([
         CommentModel.find({ room: idRoom }).populate({
           path: "author",

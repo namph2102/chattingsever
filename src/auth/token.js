@@ -9,7 +9,7 @@ class EncodeHandle {
     let result;
 
     if (isAccessToken) {
-      result = sign({ username }, this.#accessToken, { expiresIn: "30s" });
+      result = sign({ username }, this.#accessToken, { expiresIn: "1h" });
     } else
       result = sign({ username }, this.#refreshToekn, { expiresIn: "10d" });
     return result;

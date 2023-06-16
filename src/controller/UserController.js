@@ -1,6 +1,5 @@
 import UserModel from "../model/userModel.js";
 import EncodeHandle from "../auth/token.js";
-import { createCookie } from "../auth/cookieUtil.js";
 
 class Usercontroller {
   async isCheckExtened(username) {
@@ -9,7 +8,7 @@ class Usercontroller {
   }
   async handleSearch(req, res) {
     try {
-      const { search, listUserExtended } = req.body;
+      const { search, listUserExtended, limit = 100 } = req.body;
 
       if (!search) {
         throw new Error("Dữ liệu thiếu");
@@ -17,9 +16,36 @@ class Usercontroller {
       let listUserSearchs =
         (await UserModel.find({
           $text: { $search: search },
+
           _id: { $nin: listUserExtended },
         })
           .select("username fullname avatar status")
+          .limit(limit)
+          .sort({ follows: -1 })) || [];
+      return res.status(200).json({
+        listUserSearchs,
+        status: 200,
+        messsage: "Tìm thấy user",
+      });
+    } catch (err) {
+      return res.status(404).json({ messgae: err.message, status: 404 });
+    }
+  }
+  async handleSerachPage(req, res) {
+    try {
+      const { search, listUserExtended, listFriend } = req.body;
+
+      if (!search || !listUserExtended || !listFriend) {
+        throw new Error("Dữ liệu thiếu");
+      }
+      let listUserSearchs =
+        (await UserModel.find({
+          $text: { $search: search },
+
+          _id: { $nin: listUserExtended },
+        })
+          .select("username fullname avatar status follows address friends")
+          .populate({ path: "follows", match: { _id: { $in: [listFriend] } } })
           .sort({ follows: -1 })) || [];
       return res.status(200).json({
         listUserSearchs,
@@ -106,6 +132,7 @@ class Usercontroller {
     // nếu id bị trùng thì register thất bại
     try {
       const { uid, username } = req.body.data;
+
       if (!uid) throw new Error("Tài khoản chưa đăng ký!");
       let account = await UserModel.findOne({ uid });
       if (username) {
@@ -115,8 +142,10 @@ class Usercontroller {
       }
 
       if (account) {
+        const listToken = await EncodeHandle.refreshToken(account.username);
+        account.accessToken = listToken.accessToken;
+        account.refreshToken = listToken.refreshToken;
         delete account.password;
-
         return res
           .status(200)
           .json({ account, message: "Đăng nhập thành công" });
@@ -124,6 +153,21 @@ class Usercontroller {
       throw new Error("Tài khoản chưa đăng ký!");
     } catch (error) {
       res.status(403).json({ message: error.message, status: 403 });
+    }
+  }
+  async getListFriend(req, res) {
+    try {
+      const idUser = req.body.data;
+      const listfriends =
+        (await UserModel.findById(idUser)
+          .populate({
+            path: "friends",
+            select: "fullname avatar status",
+          })
+          .select("friends")) || [];
+      res.status(200).json({ listfriends, message: "oke", status: 200 });
+    } catch (err) {
+      res.status(403).json({ message: err.message, status: 403 });
     }
   }
 }

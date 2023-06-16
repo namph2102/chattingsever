@@ -8,12 +8,16 @@ class Authentication {
 
       if (accessToken) {
         // check token có trong db ko
-        const account = await UserModel.findOne({ accessToken });
+        const account = await UserModel.findOneAndUpdate(
+          { accessToken },
+          { status: true }
+        );
         if (!account) {
           throw new Error("Không tồn tại token này!");
         }
 
         const result = EncodeHandle.verifyToken(accessToken);
+
         switch (result.status) {
           case -1:
             /// token hết hạn

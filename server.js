@@ -52,15 +52,14 @@ const listPeers = [];
 app.get("/home", (req, res) => {
   res.send("Hello World!");
 });
+
 import handleSocketCall from "./src/socket/index.js";
 let handleSocket;
+
 //socket io
+//socket.userid == _idCuurent
 io.on("connection", (socket) => {
   handleSocket = new handleSocketCall(socket);
-
-  socket.on("disconnect", () => {
-    console.log("disconnect", socket.id);
-  });
 });
 const PORT_NUMBER = process.env.PORT || 3000;
 //end socket io

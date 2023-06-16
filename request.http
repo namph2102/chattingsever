@@ -24,3 +24,11 @@ Content-Type:  application/json
     "personid": "6487af7ebe3581b5e16f675f"
     }
 }
+
+###
+POST http://localhost:3000/info/notice
+Content-Type:  application/json
+
+{
+  "idUser":"6487afaabe3581b5e16f6765"
+}

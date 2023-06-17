@@ -34,9 +34,6 @@ class handleSocketCall {
     });
     // user leave room
     socket.on("leaver-room-chat-current", (idroom) => {
-      console.log("rời khỏi phòng", idroom);
-      console.log(socket.userid);
-
       try {
         if (idroom) {
           socket.leave(idroom);
@@ -44,7 +41,6 @@ class handleSocketCall {
           if (roomCuurent[idroom]) {
             roomCuurent[idroom] = false;
           }
-          console.log(roomCuurent);
         }
       } catch {}
     });
@@ -52,11 +48,6 @@ class handleSocketCall {
     socket.on("user-chat", (data) => {
       if (!socket.currentroom) return;
       try {
-        console.log(data);
-        console.log(
-          listUserJoinRoom[socket.userid],
-          listUserJoinRoom[data.idPerson]
-        );
         let isSeeUserSend = false;
 
         // xui xui undefile là toang
@@ -72,8 +63,10 @@ class handleSocketCall {
           room: socket.currentroom,
           comment: data.comment,
           author: data.author._id,
+          type: data.type,
           isSee: isSeeUserSend,
           recipient: data.idPerson,
+          file: data.file || {},
         });
         socket.broadcast.to(socket.currentroom).emit("server-chat", data);
         socket.emit("user-chat-message", { ...data, isSee: isSeeUserSend });

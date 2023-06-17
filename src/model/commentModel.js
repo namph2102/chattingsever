@@ -11,6 +11,9 @@ const commentSchema = new Schema(
     recipient: { type: Schema.Types.ObjectId, require: true },
     type: { type: String, default: "text", require: true },
     isSee: { type: Boolean, default: false },
+    file: [
+      { type: Object, default: { url: "", fileName: "", path: "", size: "" } },
+    ],
   },
   { timestamps: true }
 );

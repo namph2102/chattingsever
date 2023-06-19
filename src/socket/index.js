@@ -45,7 +45,7 @@ class handleSocketCall {
       } catch {}
     });
 
-    socket.on("user-chat", (data) => {
+    socket.on("user-chat", async (data) => {
       if (!socket.currentroom) return;
       try {
         let isSeeUserSend = false;
@@ -59,7 +59,7 @@ class handleSocketCall {
             isSeeUserSend = listUserJoinRoom[data.idPerson][socket.currentroom];
           }
         }
-        CommentModel.create({
+        const result = await CommentModel.create({
           room: socket.currentroom,
           comment: data.comment,
           author: data.author._id,
@@ -68,8 +68,14 @@ class handleSocketCall {
           recipient: data.idPerson,
           file: data.file || {},
         });
-        socket.broadcast.to(socket.currentroom).emit("server-chat", data);
-        socket.emit("user-chat-message", { ...data, isSee: isSeeUserSend });
+        socket.broadcast
+          .to(socket.currentroom)
+          .emit("server-chat", { ...data, _id: result._id });
+        socket.emit("user-chat-message", {
+          ...data,
+          isSee: isSeeUserSend,
+          _id: result._id,
+        });
       } catch {}
     });
 
@@ -85,7 +91,6 @@ class handleSocketCall {
     });
     socket.on("client-acttaced-id", async (userid) => {
       socket.join(userid);
-
       socket.userid = userid;
       const account = await UserModel.findByIdAndUpdate(userid, {
         status: true,
@@ -111,7 +116,9 @@ class handleSocketCall {
       const { userSend, userAccept, fullname } = data;
       InfomationController.addInfomation(userSend, userAccept, 1, false).then(
         (result) => {
-          socket.to(userAccept).emit("infomation-add-friend", fullname);
+          socket
+            .to(userAccept)
+            .emit(`infomation-add-friend-${userAccept}`, fullname);
         }
       );
     });

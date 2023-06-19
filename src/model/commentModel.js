@@ -11,6 +11,10 @@ const commentSchema = new Schema(
     recipient: { type: Schema.Types.ObjectId, require: true },
     type: { type: String, default: "text", require: true },
     isSee: { type: Boolean, default: false },
+    action: {
+      userId: { type: String, default: "" },
+      kind: { type: String, default: "" },
+    },
     file: [
       { type: Object, default: { url: "", fileName: "", path: "", size: "" } },
     ],

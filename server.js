@@ -54,12 +54,14 @@ app.get("/home", (req, res) => {
 });
 
 import handleSocketCall from "./src/socket/index.js";
-let handleSocket;
+import UserChatSocket from "./src/socket/userchat.js";
 
 //socket io
 //socket.userid == _idCuurent
 io.on("connection", (socket) => {
-  handleSocket = new handleSocketCall(socket);
+  new handleSocketCall(socket);
+  // handle edit gim, delete
+  new UserChatSocket(socket, io);
 });
 const PORT_NUMBER = process.env.PORT || 3000;
 //end socket io

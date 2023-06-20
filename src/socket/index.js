@@ -99,6 +99,7 @@ class handleSocketCall {
       if (socket.currentroom) {
         socket.broadcast.to(socket.currentroom).emit("person-friend-online");
       }
+      socket.broadcast.emit(`friend-chattings-${userid}`, true);
       if (!listAccountOnline.includes(userid)) {
         listAccountOnline.push(userid);
       }
@@ -109,7 +110,9 @@ class handleSocketCall {
     this.handleUpdateInfomation(socket);
   }
   async handleUserOffline(id) {
-    await UserModel.findByIdAndUpdate(id, { status: false });
+    try {
+      await UserModel.findByIdAndUpdate(id, { status: false });
+    } catch {}
   }
   async handleUserAddFriends(socket) {
     socket.on("add-friend", (data) => {
@@ -122,7 +125,6 @@ class handleSocketCall {
         }
       );
     });
-    // Gửi lời mời kết bạn type = 1;
   }
   async handleUpdateInfomation(socket) {
     socket.on("send-info-add-friend", async (data) => {

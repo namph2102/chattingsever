@@ -18,7 +18,7 @@ class RoomController {
         UserModel.findById(personid, { $push: { rooms: room._id } });
       }
       const idRoom = room._id.toString() + "";
-      console.log(idRoom);
+
       const [listChatting = [], person] = await Promise.all([
         CommentModel.find({ room: idRoom }).populate({
           path: "author",

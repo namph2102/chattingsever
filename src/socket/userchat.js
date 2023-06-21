@@ -10,11 +10,12 @@ class UserChatSocket {
       "client-send-chatting-change",
       ({ id, userId, type, typeChatting }) => {
         const action = { userId, kind: type };
+
         if (type == "delete") {
           CommentModel.findByIdAndUpdate(id, {
             action,
           }).then((result) => {
-            if (typeChatting == "image") {
+            if (typeChatting == "image" || typeChatting == "link") {
               if (userId == result.author) {
                 CommentModel.findByIdAndUpdate(id, {
                   file: [],

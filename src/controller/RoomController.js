@@ -14,8 +14,8 @@ class RoomController {
           listUser: [accountid, personid],
         });
         // addroom vào cho user;
-        UserModel.findById(accountid, { $push: { rooms: room._id } });
-        UserModel.findById(personid, { $push: { rooms: room._id } });
+        UserModel.findByIdAndUpdate(accountid, { $push: { rooms: room._id } });
+        UserModel.findByIdAndUpdate(personid, { $push: { rooms: room._id } });
       }
       const idRoom = room._id.toString() + "";
 

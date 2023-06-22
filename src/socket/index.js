@@ -118,7 +118,7 @@ class handleSocketCall {
     socket.on("add-friend", (data) => {
       const { userSend, userAccept, fullname } = data;
       InfomationController.addInfomation(userSend, userAccept, 1, false).then(
-        (result) => {
+        () => {
           socket
             .to(userAccept)
             .emit(`infomation-add-friend-${userAccept}`, fullname);
@@ -128,21 +128,22 @@ class handleSocketCall {
   }
   async handleUpdateInfomation(socket) {
     socket.on("send-info-add-friend", async (data) => {
-      const { idUserSend, isAccept, fullname, idInfo, fullnameAccept } = data;
-      if (!isAccept) {
+      try {
+        const { idUserSend, isAccept, idUserAccept, fullnameAccept } = data;
         await InfomationController.addInfomation(
-          socket.userid,
           idUserSend,
+          idUserAccept,
           2,
-          false
+          isAccept
         );
-      }
-      await InfomationController.updateInfomation(idInfo, isAccept, 2);
 
-      socket.broadcast.to(idUserSend).emit("sever-send-result-add-friend", {
-        isAccept,
-        fullname: fullnameAccept,
-      });
+        socket.broadcast.to(idUserSend).emit("sever-send-result-add-friend", {
+          isAccept,
+          fullname: fullnameAccept,
+        });
+      } catch (error) {
+        console.log(error.message);
+      }
     });
   }
   listUser = [];

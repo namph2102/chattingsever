@@ -10,7 +10,7 @@ const infoSchema = new Schema(
   {
     userSend: { type: Schema.Types.ObjectId, ref: "User", require: true },
     userAccept: { type: Schema.Types.ObjectId, ref: "User", require: true },
-    type: { type: String, default: 1 },
+    type: { type: Number, default: 1 },
     status: { type: Boolean, default: false },
   },
   { timestamps: true }

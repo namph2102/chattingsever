@@ -1,4 +1,6 @@
 import UserModel from "../model/userModel.js";
+import NotifyModel from "../model/InfoModel.js";
+
 import EncodeHandle from "../auth/token.js";
 
 class Usercontroller {
@@ -38,7 +40,7 @@ class Usercontroller {
       if (!search || !listUserExtended || !listFriend) {
         throw new Error("Dữ liệu thiếu");
       }
-      let listUserSearchs =
+      const listUserSearchs =
         (await UserModel.find({
           $text: { $search: search },
 
@@ -51,9 +53,14 @@ class Usercontroller {
           })
           .populate({ path: "friends", select: "avatar fullname" })
           .sort({ follows: -1 })) || [];
+      const listInfoSend = await NotifyModel.find({
+        userSend: listUserExtended[0],
+        type: 1,
+      }).select("userAccept");
 
       return res.status(200).json({
         listUserSearchs,
+        listInfoSend,
         status: 200,
         messsage: "Tìm thấy user",
       });

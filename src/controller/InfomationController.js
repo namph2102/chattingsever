@@ -3,27 +3,26 @@ import userModel from "../model/userModel.js";
 
 class InfomationController {
   async addInfomation(userSend, userAccept, type = 1, status = false) {
+    if (!userSend || !userAccept) throw new Error("thiếu dữ liệu info");
+    // console.log(userSend, userAccept, type, status);
     try {
-      const checkExtended = await InfoModel.findOne({ userSend, userAccept });
-      if (checkExtended) {
-        const checkReverse = await InfoModel.findOne({
-          userAccept: userSend,
-          userSend: userAccept,
-        });
-
-        if (checkReverse) {
-          this.updateInfomation(checkReverse._id, true, 2);
-          return false;
+      let checkedTypeOne = true;
+      checkedTypeOne = await InfoModel.findOne({ userSend, userAccept });
+      if (checkedTypeOne) {
+        if (checkedTypeOne.type == 1) {
+          InfoModel.findById(checkedTypeOne._id, { status: true });
         }
-        return false;
+        if (type == 2) {
+          this.updateInfomation(checkedTypeOne._id, status, type);
+        }
+        return;
       }
       InfoModel.create({ userSend, userAccept, type, status });
-      return true;
     } catch (err) {
       console.error(err.message);
     }
   }
-  async updateInfomation(idInfo, status, type = 2) {
+  async updateInfomation(idInfo, status = true, type = 2) {
     try {
       const infoTowAccount = await InfoModel.findByIdAndUpdate(idInfo, {
         status,
@@ -70,10 +69,14 @@ class InfomationController {
       const { idUser } = req.body;
       if (!idUser) throw new Error("Thiếu dữ liệu");
       const listInfo =
-        (await InfoModel.find({ userAccept: idUser }).populate({
-          path: "userSend",
-          select: "fullname avatar status",
-        })) || [];
+        (await InfoModel.find({
+          $or: [{ userSend: idUser }, { userAccept: idUser }],
+        })
+          .sort({ updatedAt: -1 })
+          .populate({
+            path: "userSend userAccept",
+            select: "fullname avatar status",
+          })) || [];
 
       return res.status(200).json({
         listInfo,
@@ -81,6 +84,7 @@ class InfomationController {
         message: "oke",
       });
     } catch (err) {
+      console.log(err);
       res.status(403).json({ message: err.message });
     }
   }

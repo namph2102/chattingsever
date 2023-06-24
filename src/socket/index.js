@@ -1,6 +1,7 @@
 import CommentModel from "../model/commentModel.js";
 import UserModel from "../model/userModel.js";
 import InfomationController from "../controller/InfomationController.js";
+import { base64ToFile } from "../utils/index.js";
 const listAccountOnline = [];
 // {[iduser]:[{room1:true},{room2:false}]}
 const listUserJoinRoom = [];
@@ -57,6 +58,15 @@ class handleSocketCall {
             listUserJoinRoom[data.idPerson][socket.currentroom] == false
           ) {
             isSeeUserSend = listUserJoinRoom[data.idPerson][socket.currentroom];
+          }
+        }
+        if (data.type == "audio") {
+          const idFile = await base64ToFile(data.comment);
+          if (idFile) {
+            data.comment = idFile;
+          } else {
+            data.comment = `<span class="text-red-400">Dữ liệu đang bị lỗi</span>`;
+            data.type = "text";
           }
         }
         const result = await CommentModel.create({

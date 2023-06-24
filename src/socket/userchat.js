@@ -1,6 +1,7 @@
 import CommentModel from "../model/commentModel.js";
 import UserModel from "../model/userModel.js";
 import InfomationController from "../controller/InfomationController.js";
+import GoogleDrive from "../servies/googledrive/upload.js";
 class UserChatSocket {
   constructor(socket, io) {
     this.handleCrudChat(socket, io);
@@ -15,12 +16,23 @@ class UserChatSocket {
           CommentModel.findByIdAndUpdate(id, {
             action,
           }).then((result) => {
-            if (typeChatting == "image" || typeChatting == "link") {
+            if (
+              typeChatting == "image" ||
+              typeChatting == "link" ||
+              typeChatting == "audio"
+            ) {
               if (userId == result.author) {
                 CommentModel.findByIdAndUpdate(id, {
                   file: [],
                   type: "text",
-                }).then(() => {});
+                }).then((result) => {
+                  if (typeChatting == "audio") {
+                    if (result.comment) {
+                      GoogleDrive.deletefile(result.comment);
+                      console.log(result.comment);
+                    }
+                  }
+                });
               }
             }
 

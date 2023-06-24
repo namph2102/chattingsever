@@ -10,10 +10,12 @@ import { engine } from "express-handlebars";
 
 //* setting path
 import path from "path";
+
+import ConnectDatabase from "./src/servies/conectMongoose.js";
+
+import AllRouter from "./src/routing/index.js";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-import ConnectDatabase from "./src/servies/conectMongoose.js";
-import AllRouter from "./src/routing/index.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(fileURLToPath(import.meta.url));
 app.use(express.static(path.join(__dirname, "public")));
@@ -48,8 +50,14 @@ const io = new Server(httpServer, {
 });
 ConnectDatabase();
 AllRouter(app);
-const listPeers = [];
+import GoogleDrive from "./src/servies/googledrive/upload.js";
 app.get("/home", (req, res) => {
+  try {
+    GoogleDrive.uploadfile(path.join(__dirname, "public", "nhacnghe.mp3"));
+  } catch (err) {
+    console.log("sever error emssage", err.message);
+  }
+
   res.send("Hello World!");
 });
 
@@ -63,6 +71,7 @@ io.on("connection", (socket) => {
   // handle edit gim, delete
   new UserChatSocket(socket, io);
 });
+
 const PORT_NUMBER = process.env.PORT || 3000;
 //end socket io
 httpServer.listen(PORT_NUMBER);

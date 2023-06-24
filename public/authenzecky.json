@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "zecky-390704",
+  "private_key_id": "b0603e54595442cbdf179f6dd76445d447bd07ea",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCqNiXMxfAoAdHt\nehwefs9M5aA9rAdoOXER/+Q5/DlP+DIzi/BUkRrA2+95SpITqtRbw4ALS/g3VZ7R\nPnXY/EK0zKa88zq+mgJ7qmnme6ttppAlUzQ2cvfelrmCkSJ8f66Uz3FNjR0QPLs0\nIDpKruq+mnKzERGdiIeIEq8h3fDd90vK8XlkvImZIzsDWz3/IJc9833uS9cSQBel\nIPwtT47Cg73/29oo/MA8NsHRXFvEdHka0aApQqw/3+HPJeu8STqB0jPYB2DYVlW5\nFAc4p9958peT35Z5DmuhGQyV97BY17TNTLtRdWsXielyEHhjVXKP5FurMuzKmkHh\nWxi+lG3FAgMBAAECggEAFJaoo1iU+E3iDfLdiF3H5vIGnDcdDUEXeXklqtLkvtTT\ng7MrXptPrGDeGmKIAVuCRNhEunkVvOG9LGu89wJqcjKn/4Z/RlNcNgeyuBeg8Io7\neNxT3jsxWsoKBe5WyM7r9+GQv7PwPkjOTxuP2X1HdUc61QidRBwh4rZ52yOcsUh4\nGZ17+Dvr4SOMGd44vnx1q6103POto3NNySQZ1XNGLjdjNJLweCKOHjys/SJRqyig\n7j6k9661WeoZ3OXJ8rnHhw6lhFTXpxK3wGq+mSqCl2X3hP2GyZr2xWkfeD5zGM7E\nSKy4KAoE9AloTZQo/VVrxrXMbv3OfRPracW3Y7rTIQKBgQDdy3GDS830bSIFPsVZ\nNzHdfo1EHJ+6A/e4zTKDECs1/wlbZ4ozIDWMbOJTDLbblZVjhbaFeJ6xK9R/PQTZ\nozWcMEeSYa9xUbCfGvet6HkbR8NU279sWAwA2IFWrb8u7L1RxTsFUrGBUyY3IwQq\neQbwJZseqoZfAJu6UDGKGj10oQKBgQDEdi0mR9NtmiUIOG27nbGjFMWH/zR+rOcq\nv1wWMljst6Pms5o5GJ4NVKL84fFr4yIXPdiQeosAIui/y2vcGCpBlZ55CARHh2kQ\nPHyyUUTjJwiI+8uowZkFzBeCMW7ed9qzZW4ZudAIFs6wzKvwFhFG7x+p4zTVc9JR\n32O6oK8CpQKBgBY1Ip6E3pBUxQ1FZbkzH5kP7NEfFJcpgopMcXxSCCGV8bfnPB02\nYmY3GMo8Aasm5Rhb8RSYKTuQKey7jVrFTr7ezqvHgCuWhFrJ9nbBSi8DFnnOrvII\nNtt20ix9pSDrr2EaoHg9+Wv7iV4H8YjXKWyuN0PwyxeEFhOnp+4uBm1BAoGAVeZS\nAW3gTQjb7kc1+5WMqQCZCciVPFn/TVqUOgRTi1UULfgTk6lm2e9KwIVOGN0b98uL\n2EgsZKfe2pVoGLjcKQbxXnwZ2uijEH1SDGmqVCOqALMPrj7P2JAPK1bP4ifHkS7l\nQAxVoGPQhc9H0lbjwP8m+hIk9LuKl0+0fFJrkx0CgYAvA6ExKe7bu08MvjMRcxmT\nDrQTe0Rrn6cMMzPELFrK6FZy009Lkhw3cWK0N0YO3ir8mFksNBuLdxmvcP6mvlgA\nYuWdvdqwlWjlKrXFzvLWSJH8d9mEZ3AOV3oZZuwmJJ3VO8eiYp6iCK731cw11y08\nskObL1LtTeJuxrKGgk6HPA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "googledriveupload@zecky-390704.iam.gserviceaccount.com",
+  "client_id": "109775836565394078310",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/googledriveupload%40zecky-390704.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

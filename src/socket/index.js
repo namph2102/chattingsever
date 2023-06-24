@@ -2,6 +2,7 @@ import CommentModel from "../model/commentModel.js";
 import UserModel from "../model/userModel.js";
 import InfomationController from "../controller/InfomationController.js";
 import { base64ToFile } from "../utils/index.js";
+
 const listAccountOnline = [];
 // {[iduser]:[{room1:true},{room2:false}]}
 const listUserJoinRoom = [];
@@ -68,6 +69,17 @@ class handleSocketCall {
             data.comment = `<span class="text-red-400">Dữ liệu đang bị lỗi</span>`;
             data.type = "text";
           }
+        } else if (data.type == "location") {
+          //'upload location'
+          try {
+            const location = JSON.parse(data.comment);
+            UserModel.findByIdAndUpdate(data.author._id, { location }).then(
+              () => {
+                console.log("upload thành công");
+              }
+            );
+            console.log(location);
+          } catch {}
         }
         const result = await CommentModel.create({
           room: socket.currentroom,

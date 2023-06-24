@@ -21,6 +21,7 @@ const userSchema = new Schema(
     follows: { type: Number, default: 0 },
     uid: { type: String, default: "" },
     address: { type: String, default: "Chưa cập nhập" },
+    location: { lat: Number, log: Number },
     phone: { type: Number, default: 0 },
     email: { type: String, default: "" },
     friends: [{ type: Schema.Types.ObjectId, default: [], ref: "User" }],

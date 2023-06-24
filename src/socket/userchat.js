@@ -16,20 +16,15 @@ class UserChatSocket {
           CommentModel.findByIdAndUpdate(id, {
             action,
           }).then((result) => {
-            if (
-              typeChatting == "image" ||
-              typeChatting == "link" ||
-              typeChatting == "audio"
-            ) {
+            if (typeChatting != "text") {
               if (userId == result.author) {
                 CommentModel.findByIdAndUpdate(id, {
                   file: [],
                   type: "text",
                 }).then((result) => {
-                  if (typeChatting == "audio") {
+                  if (typeChatting == "audio" || typeChatting == "document") {
                     if (result.comment) {
                       GoogleDrive.deletefile(result.comment);
-                      console.log(result.comment);
                     }
                   }
                 });

@@ -1,6 +1,6 @@
 import UserModel from "../model/userModel.js";
 import NotifyModel from "../model/InfoModel.js";
-
+import RoomModel from "../model/RoomModel.js";
 import EncodeHandle from "../auth/token.js";
 
 class Usercontroller {
@@ -178,6 +178,7 @@ class Usercontroller {
             select: "fullname avatar status",
           })
           .select("friends")) || [];
+
       res.status(200).json({ listfriends, message: "oke", status: 200 });
     } catch (err) {
       res.status(403).json({ message: err.message, status: 403 });

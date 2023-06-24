@@ -38,3 +38,14 @@ export const base64ToFile = async (base64String) => {
     return null;
   }
 };
+export const DeleteFileInServer = (filePath) => {
+  if (!filePath) return;
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      console.error("Error deleting file:", err);
+      return;
+    }
+
+    console.log("File deleted successfully.");
+  });
+};

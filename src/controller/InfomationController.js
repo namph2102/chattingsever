@@ -1,23 +1,31 @@
 import InfoModel from "../model/InfoModel.js";
 import userModel from "../model/userModel.js";
-
+import RoomController from "./RoomController.js";
 class InfomationController {
   async addInfomation(userSend, userAccept, type = 1, status = false) {
     if (!userSend || !userAccept) throw new Error("thiếu dữ liệu info");
-    // console.log(userSend, userAccept, type, status);
+    console.log(userSend, userAccept, type, status);
     try {
       let checkedTypeOne = true;
-      checkedTypeOne = await InfoModel.findOne({ userSend, userAccept });
+      checkedTypeOne = await InfoModel.findOne({
+        userSend,
+        userAccept,
+        $or: [{ type: 1 }, { type: 2 }],
+      });
       if (checkedTypeOne) {
+        console.log("old infomation", checkedTypeOne);
         if (checkedTypeOne.type == 1) {
-          InfoModel.findById(checkedTypeOne._id, { status: true });
+          await InfoModel.findById(checkedTypeOne._id, { status: true });
         }
         if (type == 2) {
-          this.updateInfomation(checkedTypeOne._id, status, type);
+          await this.updateInfomation(checkedTypeOne._id, status, type);
+          if (status) {
+            await RoomController.CreateRoom(userSend, userAccept);
+          }
         }
         return;
       }
-      InfoModel.create({ userSend, userAccept, type, status });
+      await InfoModel.create({ userSend, userAccept, type, status });
     } catch (err) {
       console.error(err.message);
     }
@@ -59,6 +67,7 @@ class InfomationController {
             $inc: { follows: 1 },
           });
         }
+        console.log("upladte thành công");
       }
     } catch (err) {
       console.error(err.message);
@@ -86,6 +95,28 @@ class InfomationController {
     } catch (err) {
       console.log(err);
       res.status(403).json({ message: err.message });
+    }
+  }
+  async createInfoUser(
+    userSend,
+    userAccept,
+    type,
+    status = true,
+    message = ""
+  ) {
+    try {
+      if (!userSend || !userAccept || !type) throw new Error("Thiếu dữ liệu");
+      const result = await InfoModel.create({
+        userSend,
+        userAccept,
+        type,
+        status,
+        message,
+      });
+
+      return result._id.toString();
+    } catch (err) {
+      throw new Error(err.message);
     }
   }
 }

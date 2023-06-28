@@ -15,15 +15,26 @@ class Usercontroller {
       if (!search) {
         throw new Error("Dữ liệu thiếu");
       }
-      let listUserSearchs =
-        (await UserModel.find({
-          $text: { $search: search },
+      let listUserSearchs = [];
+      if (search == "getall") {
+        listUserSearchs =
+          (await UserModel.find({
+            _id: { $nin: listUserExtended },
+          })
+            .select("username fullname avatar status")
+            .sort({ follows: -1 })) || [];
+      } else {
+        listUserSearchs =
+          (await UserModel.find({
+            $text: { $search: search },
 
-          _id: { $nin: listUserExtended },
-        })
-          .select("username fullname avatar status")
-          .limit(limit)
-          .sort({ follows: -1 })) || [];
+            _id: { $nin: listUserExtended },
+          })
+            .select("username fullname avatar status")
+            .limit(limit)
+            .sort({ follows: -1 })) || [];
+      }
+
       return res.status(200).json({
         listUserSearchs,
         status: 200,
@@ -171,16 +182,26 @@ class Usercontroller {
   async getListFriend(req, res) {
     try {
       const idUser = req.body.data;
+      if (!idUser) throw new Error("Thiếu dữ liệu");
       const listfriends =
         (await UserModel.findById(idUser)
           .populate({
             path: "friends",
             select: "fullname avatar status",
           })
-          .select("friends")) || [];
+          .populate({
+            path: "rooms",
+            populate: {
+              path: "listUser role",
+              select: "fullname avatar status",
+            },
+            select: "listUser type name",
+          })
+          .select("friends rooms")) || [];
 
       res.status(200).json({ listfriends, message: "oke", status: 200 });
     } catch (err) {
+      console.log(err);
       res.status(403).json({ message: err.message, status: 403 });
     }
   }

@@ -115,15 +115,17 @@ app.get("/home", (req, res) => {
 });
 
 import handleSocketCall from "./src/socket/index.js";
+import userCreateGroup from "./src/socket/userCreateGroup.js";
 import UserChatSocket from "./src/socket/userchat.js";
 import { DeleteFileInServer } from "./src/utils/index.js";
 
 //socket io
 //socket.userid == _idCuurent
 io.on("connection", (socket) => {
-  new handleSocketCall(socket);
+  new handleSocketCall(socket, io);
   // handle edit gim, delete
   new UserChatSocket(socket, io);
+  new userCreateGroup(socket, io);
 });
 
 const PORT_NUMBER = process.env.PORT || 3000;

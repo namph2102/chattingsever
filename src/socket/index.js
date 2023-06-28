@@ -9,7 +9,7 @@ const listUserJoinRoom = [];
 
 class handleSocketCall {
   socket;
-  constructor(socket) {
+  constructor(socket, io) {
     this.socket = socket;
 
     // chatting with tow user
@@ -50,10 +50,10 @@ class handleSocketCall {
     socket.on("user-chat", async (data) => {
       if (!socket.currentroom) return;
       try {
-        let isSeeUserSend = false;
+        let isSeeUserSend = true;
 
         // xui xui undefile là toang
-        if (listUserJoinRoom[data.idPerson]) {
+        if (data.typechat == "friend" && listUserJoinRoom[data.idPerson]) {
           if (
             listUserJoinRoom[data.idPerson][socket.currentroom] == true ||
             listUserJoinRoom[data.idPerson][socket.currentroom] == false
@@ -87,7 +87,6 @@ class handleSocketCall {
           author: data.author._id,
           type: data.type,
           isSee: isSeeUserSend,
-          recipient: data.idPerson,
           file: data.file || {},
         });
         socket.broadcast
@@ -112,6 +111,7 @@ class handleSocketCall {
       listAccountOnline.splice(listAccountOnline.indexOf(socket.userid), 1);
     });
     socket.on("client-acttaced-id", async (userid) => {
+      console.log("id userid", userid);
       socket.join(userid);
       socket.userid = userid;
       const account = await UserModel.findByIdAndUpdate(userid, {
@@ -128,8 +128,8 @@ class handleSocketCall {
     });
 
     // options
-    this.handleUserAddFriends(socket);
-    this.handleUpdateInfomation(socket);
+    this.handleUserAddFriends(socket, io);
+    this.handleUpdateInfomation(socket, io);
   }
   async handleUserOffline(id) {
     try {
@@ -139,6 +139,7 @@ class handleSocketCall {
   async handleUserAddFriends(socket) {
     socket.on("add-friend", (data) => {
       const { userSend, userAccept, fullname } = data;
+      console.log(data);
       InfomationController.addInfomation(userSend, userAccept, 1, false).then(
         () => {
           socket
@@ -148,7 +149,7 @@ class handleSocketCall {
       );
     });
   }
-  async handleUpdateInfomation(socket) {
+  async handleUpdateInfomation(socket, io) {
     socket.on("send-info-add-friend", async (data) => {
       try {
         const { idUserSend, isAccept, idUserAccept, fullnameAccept } = data;
@@ -158,6 +159,8 @@ class handleSocketCall {
           2,
           isAccept
         );
+        io.to(idUserSend).emit("reload-show-friends-whenaccept");
+        io.to(idUserAccept).emit("reload-show-friends-whenaccept");
 
         socket.broadcast.to(idUserSend).emit("sever-send-result-add-friend", {
           isAccept,

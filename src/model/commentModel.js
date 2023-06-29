@@ -17,6 +17,7 @@ const commentSchema = new Schema(
     file: [
       { type: Object, default: { url: "", fileName: "", path: "", size: "" } },
     ],
+    blocked: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

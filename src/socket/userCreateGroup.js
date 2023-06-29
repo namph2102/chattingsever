@@ -57,12 +57,45 @@ class userCreateGroupChat {
             if (status && userSendID) {
               await RoomController.handleAddUserInRoom(idRoom, userSendID).then(
                 (result) => {
+                  socket.broadcast
+                    .to(idRoom)
+                    .emit("sever-send-update-when-user-joined");
                   socket.emit(
                     "server-send-message-myself",
                     "Bạn đã tham gia kênh chat "
                   );
                 }
               );
+            }
+          } catch (err) {
+            console.log(err);
+          }
+        }
+      );
+      // gửi lời mời tham gia rooms;
+
+      socket.on(
+        "invite-to-join-group",
+        async ({ idRoom, userSendID, listIdInvited, fullname, nameRoom }) => {
+          try {
+            if (idRoom) {
+              // gửi room về cho user
+              listIdInvited.forEach(async (idUser) => {
+                await InfomationController.createInfoUser(
+                  userSendID,
+                  idUser,
+                  4,
+                  false,
+                  idRoom
+                ).then((id) => {
+                  socket.broadcast.emit(`invite-to-join-room-${idUser}`, {
+                    fullname,
+                    nameRoom,
+                    idNotice: id,
+                    idRoom,
+                  });
+                });
+              });
             }
           } catch (err) {
             console.log(err);

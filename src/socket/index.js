@@ -139,7 +139,7 @@ class handleSocketCall {
   async handleUserAddFriends(socket) {
     socket.on("add-friend", (data) => {
       const { userSend, userAccept, fullname } = data;
-      console.log(data);
+
       InfomationController.addInfomation(userSend, userAccept, 1, false).then(
         () => {
           socket

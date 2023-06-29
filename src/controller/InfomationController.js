@@ -4,7 +4,6 @@ import RoomController from "./RoomController.js";
 class InfomationController {
   async addInfomation(userSend, userAccept, type = 1, status = false) {
     if (!userSend || !userAccept) throw new Error("thiếu dữ liệu info");
-    console.log(userSend, userAccept, type, status);
     try {
       let checkedTypeOne = true;
       checkedTypeOne = await InfoModel.findOne({
@@ -13,7 +12,6 @@ class InfomationController {
         $or: [{ type: 1 }, { type: 2 }],
       });
       if (checkedTypeOne) {
-        console.log("old infomation", checkedTypeOne);
         if (checkedTypeOne.type == 1) {
           await InfoModel.findById(checkedTypeOne._id, { status: true });
         }
@@ -117,6 +115,16 @@ class InfomationController {
       return result._id.toString();
     } catch (err) {
       throw new Error(err.message);
+    }
+  }
+  async getListInfomationWatingAccept(req, res) {
+    try {
+      const { idUser } = req.body;
+      const result = await InfoModel.find({ userSend: idUser, type: 1 });
+
+      res.status(200).json({ listInfo: result, status: 200, message: "oke" });
+    } catch (err) {
+      console.log(err);
     }
   }
 }

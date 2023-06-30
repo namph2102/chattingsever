@@ -195,7 +195,7 @@ class Usercontroller {
               path: "listUser role",
               select: "fullname avatar status",
             },
-            select: "listUser type name",
+            select: "listUser type name avatar des",
           })
           .select("friends rooms")) || [];
 

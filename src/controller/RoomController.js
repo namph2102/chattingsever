@@ -1,6 +1,7 @@
 import RoomModel from "../model/RoomModel.js";
 import CommentModel from "../model/commentModel.js";
 import UserModel from "../model/userModel.js";
+import CommentController from "./CommentController.js";
 import InfomationController from "./InfomationController.js";
 
 class RoomController {
@@ -106,6 +107,74 @@ class RoomController {
       throw new Error("Lỗi thêm room và user rồi!");
     } catch (error) {
       console.log(error);
+    }
+  }
+  async UpdateRoomSettings(req, res) {
+    try {
+      const { url, path, name, des, room, idSend } = req.body.data;
+      if (!room) throw new Error("Thiếu dữ liệu");
+      let resultRoom;
+      if (url && path) {
+        if (des) {
+          resultRoom = await RoomModel.findByIdAndUpdate(room, {
+            avatar: { path, url },
+            des,
+            name,
+          });
+        } else {
+          resultRoom = await RoomModel.findByIdAndUpdate(room, {
+            avatar: { path, url },
+            name,
+          });
+        }
+        await Promise.all([
+          CommentController.createComment(
+            room,
+            "đã cập nhập ảnh đại diện",
+            idSend,
+            "info"
+          ),
+          CommentController.createComment(
+            room,
+            `đã thay đổi tên nhóm thành ${name}`,
+            idSend,
+            "info"
+          ),
+        ]);
+      } else {
+        if (des) {
+          resultRoom = await RoomModel.findByIdAndUpdate(room, {
+            des,
+            name,
+          });
+        } else {
+          resultRoom = await RoomModel.findByIdAndUpdate(room, {
+            name,
+          });
+        }
+
+        await CommentController.createComment(
+          room,
+          `đã thay đổi tên nhóm thành ${name}`,
+          idSend,
+          "info"
+        );
+      }
+
+      await InfomationController.createInfoUser(
+        idSend,
+        idSend,
+        6,
+        true,
+        ` đã cập nhập nhóm ${name}`
+      );
+
+      res
+        .status(200)
+        .json({ message: " Cập nhập thành công", statusCode: 200, resultRoom });
+    } catch (error) {
+      console.log(error);
+      res.status(404).json({ statusCode: 404, message: error.message });
     }
   }
 }

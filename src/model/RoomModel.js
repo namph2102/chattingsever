@@ -8,6 +8,10 @@ const roomSchema = new Schema(
     type: { type: String, default: "friend" },
     role: { type: Schema.Types.ObjectId, ref: "User", default: "" },
     des: { type: String, default: "" },
+    avatar: {
+      type: Object,
+      default: { path: "", url: "/images/group.png" },
+    },
   },
   { timestamps: true }
 );

@@ -1,9 +1,15 @@
 import RoomController from "../controller/RoomController.js";
 import InfoModel from "../model/InfoModel.js";
 import InfomationController from "../controller/InfomationController.js";
+import CommentController from "../controller/CommentController.js";
 class userCreateGroupChat {
   constructor(socket, io) {
+    socket.on("join-in-group-all", (idroom) => {
+      // cho các room của group lắng nghe sự kiện khi thay đổi
+      socket.join(idroom);
+    });
     this.handleInviteGround(socket, io);
+    this.handleChnageSettingGroup(socket, io);
   }
   async handleInviteGround(socket, io) {
     try {
@@ -102,6 +108,18 @@ class userCreateGroupChat {
           }
         }
       );
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  async handleChnageSettingGroup(socket, io) {
+    try {
+      socket.on("loading-room-setting", ({ idRoom, fullname, url }) => {
+        io.to(idRoom).emit("sever-send-update-when-user-joined", {
+          fullname,
+          url,
+        });
+      });
     } catch (error) {
       console.log(error);
     }

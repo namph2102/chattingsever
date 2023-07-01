@@ -3,7 +3,9 @@
   "module": "CommonJS",
   "dependencies": {
     "argon2": "^0.27.1",
+    "axios": "^1.4.0",
     "casual": "^1.6.2",
+    "cheerio": "^1.0.0-rc.12",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -15,6 +17,7 @@
     "fs": "^0.0.1-security",
     "google-auth-library": "^8.8.0",
     "googleapis": "^118.0.0",
+    "jsdom": "^22.1.0",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.2.1",
     "multer": "^1.4.5-lts.1",

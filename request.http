@@ -40,3 +40,11 @@ Content-Type:  application/json
 {
   "idUser":"649968bad4a1bc3adf6d94f2"
 }
+
+###
+POST http://localhost:3000/user/crawlink
+Content-Type:  application/json
+
+{
+  "data":"https://longnv.name.vn/"
+}

@@ -46,24 +46,39 @@ class Usercontroller {
   }
   async handleSerachPage(req, res) {
     try {
-      const { search, listUserExtended, listFriend } = req.body;
+      let { search, listUserExtended, listFriend } = req.body;
 
       if (!search || !listUserExtended || !listFriend) {
         throw new Error("Dữ liệu thiếu");
       }
-      const listUserSearchs =
-        (await UserModel.find({
-          $text: { $search: search },
+      let listUserSearchs = [];
 
-          _id: { $nin: listUserExtended },
-        })
-          .select("username fullname avatar status follows address friends")
-          .populate({
-            path: "follows",
-            match: { _id: { $in: [listFriend] } },
+      if (search == "getall") {
+        listUserSearchs =
+          (await UserModel.find({
+            _id: { $nin: listUserExtended },
           })
-          .populate({ path: "friends", select: "avatar fullname" })
-          .sort({ follows: -1 })) || [];
+            .select("username fullname avatar status follows address friends")
+            .populate({
+              path: "follows",
+              match: { _id: { $in: [listFriend] } },
+            })
+            .populate({ path: "friends", select: "avatar fullname" })
+            .sort({ follows: -1 })) || [];
+      } else
+        listUserSearchs =
+          (await UserModel.find({
+            $text: { $search: search },
+
+            _id: { $nin: listUserExtended },
+          })
+            .select("username fullname avatar status follows address friends")
+            .populate({
+              path: "follows",
+              match: { _id: { $in: [listFriend] } },
+            })
+            .populate({ path: "friends", select: "avatar fullname" })
+            .sort({ follows: -1 })) || [];
       const listInfoSend = await NotifyModel.find({
         userSend: listUserExtended[0],
         type: 1,
@@ -198,8 +213,10 @@ class Usercontroller {
             select: "listUser type name avatar des",
           })
           .select("friends rooms")) || [];
-
-      res.status(200).json({ listfriends, message: "oke", status: 200 });
+      const accountRoom = await UserModel.findById(idUser).select("rooms");
+      res
+        .status(200)
+        .json({ listfriends, accountRoom, message: "oke", status: 200 });
     } catch (err) {
       console.log(err);
       res.status(403).json({ message: err.message, status: 403 });

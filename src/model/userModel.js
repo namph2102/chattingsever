@@ -26,7 +26,7 @@ const userSchema = new Schema(
     email: { type: String, default: "" },
     friends: [{ type: Schema.Types.ObjectId, default: [], ref: "User" }],
     favorites: [{ type: Schema.Types.ObjectId, default: [], ref: "User" }],
-
+    listFollows: [{ type: Schema.Types.ObjectId, default: [], ref: "User" }],
     rooms: [{ type: Schema.Types.ObjectId, default: [], ref: "Room" }],
   },
   { timestamps: true, autoIndex: true }

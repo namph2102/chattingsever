@@ -89,6 +89,7 @@ class handleSocketCall {
           isSee: isSeeUserSend,
           file: data.file || {},
         });
+
         socket.broadcast
           .to(socket.currentroom)
           .emit("server-chat", { ...data, _id: result._id });

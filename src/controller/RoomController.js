@@ -1,6 +1,7 @@
 import RoomModel from "../model/RoomModel.js";
 import CommentModel from "../model/commentModel.js";
 import UserModel from "../model/userModel.js";
+
 import CommentController from "./CommentController.js";
 import InfomationController from "./InfomationController.js";
 
@@ -81,13 +82,6 @@ class RoomController {
         const listRooms = checkRoomInUser?.rooms || [];
 
         if (!listRooms.includes(idRoom)) {
-          await CommentModel.create({
-            room: idRoom,
-            comment: " đã tham gia phòng",
-            author: idUser,
-            type: "info",
-            isSee: true,
-          });
           await UserModel.findByIdAndUpdate(idUser, {
             $push: { rooms: idRoom },
           });

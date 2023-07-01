@@ -55,13 +55,14 @@ class InfomationController {
 
         if (!listSends.includes(userAccept)) {
           await userModel.findByIdAndUpdate(userSend, {
-            $push: { friends: userAccept },
+            $push: { friends: userAccept, listFollows: userAccept },
+
             $inc: { follows: 1 },
           });
         }
         if (!listAccepcts.includes(userSend)) {
           await userModel.findByIdAndUpdate(userAccept, {
-            $push: { friends: userSend },
+            $push: { friends: userSend, listFollows: userSend },
             $inc: { follows: 1 },
           });
         }

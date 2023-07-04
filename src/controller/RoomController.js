@@ -56,6 +56,7 @@ class RoomController {
         role: idUserCreate,
         type: "group",
       });
+
       await this.handleAddUserInRoom(infoRoom._id.toString(), idUserCreate);
       await InfomationController.createInfoUser(
         idUserCreate,
@@ -95,7 +96,6 @@ class RoomController {
             4,
             true
           );
-          return;
         }
       }
       throw new Error("Lỗi thêm room và user rồi!");

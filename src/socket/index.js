@@ -112,7 +112,6 @@ class handleSocketCall {
       listAccountOnline.splice(listAccountOnline.indexOf(socket.userid), 1);
     });
     socket.on("client-acttaced-id", async (userid) => {
-      console.log("id userid", userid);
       socket.join(userid);
       socket.userid = userid;
       const account = await UserModel.findByIdAndUpdate(userid, {

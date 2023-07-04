@@ -2,6 +2,7 @@ import pkg from "mongoose";
 const { Schema, model, models } = pkg;
 
 //type comment   1: text , 2:file ,3 Link, map , video , recored
+// type =call  comment chứa id room/
 
 const commentSchema = new Schema(
   {

@@ -33,7 +33,13 @@ class userCreateGroupChat {
               userSendID,
               nameRoom
             );
-
+            await CommentModel.create({
+              room: idRoom,
+              comment: " đã tham gia phòng",
+              author: userSendID,
+              type: "info",
+              isSee: true,
+            });
             socket.emit(
               "server-send-message-myself",
               "Bạn đã tạo thành công kênh chat " + nameRoom

@@ -25,7 +25,7 @@ export const SeverSeverCommentInfo = async (
       idPerson: idAccount,
       isSee: false,
       isUser: false,
-      type: "info",
+      type: commentInfo.type,
       typechat: "group",
       _id: commentInfo._id,
     });

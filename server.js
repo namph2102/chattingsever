@@ -131,12 +131,6 @@ io.on("connection", (socket) => {
   new UserChatSocket(socket, io);
   new userCreateGroup(socket, io);
   new UserCall(socket, io);
-  socket.on("user-join-room-call", ({ idPeerJs, personid, fullname }) => {
-    // console.log(idPeerJs, personid, fullname);
-    socket.broadcast
-      .to(personid)
-      .emit(`sever-send-open-status-call`, { fullname, idPeerJs });
-  });
 });
 
 const PORT_NUMBER = process.env.PORT || 3000;

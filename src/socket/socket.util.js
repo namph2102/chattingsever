@@ -3,7 +3,8 @@ export const SeverSeverCommentInfo = async (
   io,
   CommentId,
   roomid,
-  idAccount
+  idAccount,
+  typechat = "group"
 ) => {
   try {
     const commentInfo = await CommentModel.findOne(CommentId).populate({
@@ -26,7 +27,7 @@ export const SeverSeverCommentInfo = async (
       isSee: false,
       isUser: false,
       type: commentInfo.type,
-      typechat: "group",
+      typechat,
       _id: commentInfo._id,
     });
   } catch (error) {

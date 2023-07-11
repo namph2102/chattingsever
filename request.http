@@ -48,3 +48,10 @@ Content-Type:  application/json
 {
   "data":"https://longnv.name.vn/"
 }
+###
+POST http://localhost:3000/info/notice/call
+Content-Type:  application/json
+
+{
+  "data":"649eba909eeb9ff7df4475c1"
+}

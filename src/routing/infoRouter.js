@@ -5,5 +5,6 @@ const router = express.Router();
 
 router
   .post("/notice", InfomationController.getInfoUser)
-  .post("/accept/friends", InfomationController.getListInfomationWatingAccept);
+  .post("/accept/friends", InfomationController.getListInfomationWatingAccept)
+  .post("/notice/call", InfomationController.getListCommentCall);
 export default router;

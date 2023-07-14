@@ -49,9 +49,9 @@ Content-Type:  application/json
   "data":"https://longnv.name.vn/"
 }
 ###
-POST http://localhost:3000/info/notice/call
+POST http://localhost:3000/room/info
 Content-Type:  application/json
 
 {
-  "data":"649eba909eeb9ff7df4475c1"
+  "data":"649ff99ba3b7146985f744b6"
 }

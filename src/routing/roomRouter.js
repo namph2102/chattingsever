@@ -8,5 +8,6 @@ roomRouter
   .get("/", (req, res) => {
     res.send("Trang home test");
   })
-  .patch("/update/settings", RoomController.UpdateRoomSettings);
+  .patch("/update/settings", RoomController.UpdateRoomSettings)
+  .post("/info", RoomController.getInfomationRoom);
 export default roomRouter;

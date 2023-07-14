@@ -171,5 +171,24 @@ class RoomController {
       res.status(404).json({ statusCode: 404, message: error.message });
     }
   }
+  async getInfomationRoom(req, res) {
+    try {
+      const idRoom = req.body.data;
+      if (!idRoom) throw new Error("Thiếu dữ liệu");
+
+      const infoRoom = await RoomModel.findById(idRoom);
+      if (infoRoom) {
+        res.status(200).json({
+          statusCode: 200,
+          infoRoom,
+          message: "Lấy thành công thông tin phòng",
+        });
+      } else {
+        throw new Error("Không tìm thấy thông tin phòng");
+      }
+    } catch (error) {
+      res.status(404).json({ statusCode: 404, message: error.message });
+    }
+  }
 }
 export default new RoomController();

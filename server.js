@@ -122,6 +122,7 @@ import UserCall from "./src/socket/userCall.js";
 export default UserCall;
 
 import { DeleteFileInServer } from "./src/utils/index.js";
+import UserChange from "./src/socket/userChange.js";
 
 //socket io
 //socket.userid == _idCuurent
@@ -131,6 +132,7 @@ io.on("connection", (socket) => {
   new UserChatSocket(socket, io);
   new userCreateGroup(socket, io);
   new UserCall(socket, io);
+  new UserChange(socket, io);
 });
 
 const PORT_NUMBER = process.env.PORT || 3000;

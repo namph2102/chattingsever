@@ -70,7 +70,11 @@ class userCreateGroupChat {
         "user-accpet-join-group",
         async ({ idNotice, idRoom, status, userSendID }) => {
           try {
-            await InfoModel.findByIdAndUpdate(idNotice, { status, type: 5 });
+            idNotice &&
+              (await InfoModel.findByIdAndUpdate(idNotice, {
+                status,
+                type: 5,
+              }));
 
             if (status && userSendID) {
               CommentModel.create({

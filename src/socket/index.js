@@ -50,7 +50,7 @@ class handleSocketCall {
     socket.on("user-chat", async (data) => {
       if (!socket.currentroom) return;
       try {
-        let isSeeUserSend = true;
+        let isSeeUserSend = data.isSee;
 
         // xui xui undefile là toang
         if (data.typechat == "friend" && listUserJoinRoom[data.idPerson]) {
@@ -81,6 +81,7 @@ class handleSocketCall {
             console.log(location);
           } catch {}
         }
+
         const result = await CommentModel.create({
           room: socket.currentroom,
           comment: data.comment,

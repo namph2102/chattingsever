@@ -23,7 +23,7 @@ const userSchema = new Schema(
     uid: { type: String, default: "" },
     address: { type: String, default: "Chưa cập nhập" },
     location: { lat: Number, log: Number },
-    phone: { type: Number, default: 0 },
+    phone: { type: String, default: "" },
     email: { type: String, default: "" },
     pathAvatar: { type: String, default: "" },
     pathBackground: { type: String, default: "" },

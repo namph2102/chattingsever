@@ -202,13 +202,13 @@ class Usercontroller {
         (await UserModel.findById(idUser)
           .populate({
             path: "friends",
-            select: "fullname avatar status",
+            select: "fullname avatar status updatedAt",
           })
           .populate({
             path: "rooms",
             populate: {
               path: "listUser role",
-              select: "fullname avatar status",
+              select: "fullname avatar status updatedAt status",
             },
             select: "listUser type name avatar des",
           })

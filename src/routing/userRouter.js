@@ -11,7 +11,7 @@ UserRouter.post("/create", UserController.createAccount.bind(UserController))
   .post("/page/search", UserController.handleSerachPage)
   .post("/login", UserController.loginAccount.bind(UserController))
   .post("/listfriend", UserController.getListFriend)
-  .get("/", (req, res) => res.send("hello"))
+  .get("/", (req, res) => res.send("Well come my website"))
   .post("/crawlink", CommentController.CrawLink);
 
 export default UserRouter;

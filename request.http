@@ -55,3 +55,19 @@ Content-Type:  application/json
 {
   "data":"649ff99ba3b7146985f744b6"
 }
+
+###
+GET http://localhost:3000/blog/allblog
+Content-Type:  application/json
+
+{
+  "data":"649ff99ba3b7146985f744b6"
+}
+
+###
+POST http://localhost:3000/blog/detail
+Content-Type:  application/json
+
+{
+  "slug":"higher-order-function-javascript"
+}

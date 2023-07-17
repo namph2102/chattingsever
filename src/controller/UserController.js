@@ -222,5 +222,53 @@ class Usercontroller {
       res.status(403).json({ message: err.message, status: 403 });
     }
   }
+  async changePassword(req, res) {
+    try {
+      const { username, password, newpassword } = req.body.data;
+      if (!username || !password || !newpassword) {
+        throw new Error("Thiếu dữ liệu");
+      }
+
+      const result = await UserModel.findOne({ username: username }).select(
+        "password"
+      );
+
+      if (!result) throw new Error("Tài khoản không tồn tại");
+      const checked = await EncodeHandle.verifyPassword(
+        result.password,
+        password
+      );
+
+      if (checked) {
+        const newPasswordHash = await EncodeHandle.generatePassword(
+          newpassword
+        );
+        newPasswordHash &&
+          (await Promise.all([
+            UserModel.findOneAndUpdate(
+              { username },
+              { password: newPasswordHash }
+            ),
+            NotifyModel.create({
+              userSend: result._id,
+              userAccept: result._id,
+              type: 6,
+              status: true,
+              message: "thay đổi mật khẩu thành công",
+            }),
+          ]));
+
+        res
+          .status(201)
+          .json({ message: "Thay đổi mật khẩu thành công", statusCode: 201 });
+        return;
+      } else {
+        throw new Error("Mật khẩu cũ không đúng");
+      }
+    } catch (err) {
+   
+      res.status(200).json({ message: err.message, statusCode: 200 });
+    }
+  }
 }
 export default new Usercontroller();

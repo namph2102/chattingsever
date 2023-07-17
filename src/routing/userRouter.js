@@ -12,6 +12,7 @@ UserRouter.post("/create", UserController.createAccount.bind(UserController))
   .post("/login", UserController.loginAccount.bind(UserController))
   .post("/listfriend", UserController.getListFriend)
   .get("/", (req, res) => res.send("Well come my website"))
-  .post("/crawlink", CommentController.CrawLink);
+  .post("/crawlink", CommentController.CrawLink)
+  .post("/changepassword", UserController.changePassword);
 
 export default UserRouter;

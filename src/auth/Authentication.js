@@ -47,5 +47,24 @@ class Authentication {
       res.status(401).json({ message: err.message });
     }
   }
+  async AccuracyPermission(req, res, next) {
+    try {
+      const [_, accessToken] = req.headers["authorization"].split(" ");
+
+      if (accessToken) {
+        // check token có trong db ko
+        const account = await UserModel.findOneAndUpdate(
+          { accessToken },
+          { status: true }
+        );
+
+        if (account && account.permission !== "member") {
+          next();
+        }
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
 }
 export default new Authentication();

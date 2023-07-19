@@ -266,7 +266,6 @@ class Usercontroller {
         throw new Error("Mật khẩu cũ không đúng");
       }
     } catch (err) {
-   
       res.status(200).json({ message: err.message, statusCode: 200 });
     }
   }

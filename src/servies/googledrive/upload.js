@@ -49,7 +49,7 @@ class GoogleDrive {
     try {
       const createfile = await driveService.files.create({
         requestBody: {
-          name: casual.uuid + fileUpload.filename,
+          name: fileUpload.filename,
           parents: ["1-QoRkEvWVldDUg0XbMuCl_tHRTsizuxI"],
         },
         media: {

@@ -4,7 +4,7 @@ import Authentication from "../auth/Authentication.js";
 const router = express.Router();
 //cate
 router
-  .get("/", Authentication.AccuracyPermission, CateController.getAllCate)
+  .get("/", CateController.getAllCate)
   .post("/ceate", Authentication.AccuracyPermission, CateController.createCate);
 
 export default router;

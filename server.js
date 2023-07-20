@@ -109,7 +109,18 @@ app.post("/upload", upload.single("file"), async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 });
-
+app.post("/upload/delete", async function (req, res) {
+  try {
+    const path = req.body.data;
+    if (path) {
+      await GoogleDrive.deletefile(path);
+    }
+    res.status(200).json("Xóa thành công");
+  } catch (err) {
+    console.log(err);
+    res.status(200).json("Xóa thất bại");
+  }
+});
 app.get("/home", (req, res) => {
   res.send("Hello World!");
 });

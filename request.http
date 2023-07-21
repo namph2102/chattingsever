@@ -65,9 +65,9 @@ Content-Type:  application/json
 }
 
 ###
-POST http://localhost:5000/blog/detail
+POST http://localhost:5000/cate/getslug
 Content-Type:  application/json
 
 {
-  "slug":"ty-le-hoc-sinh-da-nang-dau-tot-nghiep-thpt-nam-2023-la-96-84"
+  "data":"doi-song"
 }

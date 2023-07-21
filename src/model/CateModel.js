@@ -9,6 +9,9 @@ const CateSchema = new Schema(
       required: true,
       ref: "User",
     },
+    des: { type: String, default: "" },
+    image: { type: String, default: "" },
+    pathImage: { type: String, default: "" },
   },
   { timestamps: true }
 );

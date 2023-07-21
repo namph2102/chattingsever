@@ -5,6 +5,7 @@ const router = express.Router();
 //cate
 router
   .get("/", CateController.getAllCate)
-  .post("/ceate", Authentication.AccuracyPermission, CateController.createCate);
+  .post("/ceate", Authentication.AccuracyPermission, CateController.createCate)
+  .post("/getslug", CateController.getCateSlug);
 
 export default router;

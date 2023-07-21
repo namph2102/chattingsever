@@ -3,7 +3,7 @@ import UserModel from "../model/userModel.js";
 import InfomationController from "../controller/InfomationController.js";
 import { base64ToFile } from "../utils/index.js";
 
-const listAccountOnline = [];
+export const listAccountOnline = [];
 // {[iduser]:[{room1:true},{room2:false}]}
 const listUserJoinRoom = [];
 

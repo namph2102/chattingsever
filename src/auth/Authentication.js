@@ -50,7 +50,7 @@ class Authentication {
   async AccuracyPermission(req, res, next) {
     try {
       const [_, accessToken] = req.headers["authorization"].split(" ");
-
+      console.log("Xác thực tài khoản");
       if (accessToken) {
         // check token có trong db ko
         const account = await UserModel.findOneAndUpdate(
@@ -63,6 +63,7 @@ class Authentication {
         }
       }
     } catch (err) {
+      console.log("Bạn ko phải là quản trị viên");
       console.log(err.message);
     }
   }

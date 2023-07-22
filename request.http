@@ -1,73 +1,16 @@
-#
-POST http://localhost:3000/user/login
-Content-Type: application/json
-
-{
-    "data":{
-        "username":"test1",
-        "password":"123456"
-    }
-}
 
 ###
-POST http://localhost:3000/user/firstlogin
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QxIiwiaWF0IjoxNjg2NjIzMzkyLCJleHAiOjE2ODY2MjM0MjJ9.jWvg7uWGryGq7qAIHUComvk0uNOh7cHXyEsYULQXX_8
-
-###
-
-POST https://chattingsever-production.up.railway.app/room/create
+POST http://localhost:5000/blog/admin/blog
 Content-Type:  application/json
 
 {
-   "data": {
-    "accountid": "6487af6dbe3581b5e16f675c",
-    "personid": "6487af7ebe3581b5e16f675f"
-    }
+  "data":{"limit":1,"skip":0,"userId":"64996ff8617d55e8b12046c3"}
 }
 
 ###
-POST http://localhost:3000/info/notice
+POST http://localhost:5000/blog/admin/search
 Content-Type:  application/json
 
 {
-  "idUser":"6487afaabe3581b5e16f6765"
-}
-
-###
-POST http://localhost:3000/info/accept/friends
-Content-Type:  application/json
-
-{
-  "idUser":"649968bad4a1bc3adf6d94f2"
-}
-
-###
-POST http://localhost:3000/user/crawlink
-Content-Type:  application/json
-
-{
-  "data":"https://longnv.name.vn/"
-}
-###
-POST http://localhost:3000/room/info
-Content-Type:  application/json
-
-{
-  "data":"649ff99ba3b7146985f744b6"
-}
-
-###
-GET http://localhost:3000/blog/allblog
-Content-Type:  application/json
-
-{
-  "data":"649ff99ba3b7146985f744b6"
-}
-
-###
-POST http://localhost:5000/cate/getslug
-Content-Type:  application/json
-
-{
-  "data":"doi-song"
+  "data":{"search":"lực","userId":"649eb8529eeb9ff7df44758b"}
 }

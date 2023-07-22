@@ -30,6 +30,7 @@ class CateController {
   async getCateSlug(req, res) {
     try {
       const slug = req.body.data;
+
       const category = await CateModel.findOne({ slug: slug });
       if (!category) throw new Error("Không tồn tại danh mục này");
 

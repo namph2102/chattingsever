@@ -1,6 +1,8 @@
 import blogModel from "../model/blogModel.js";
 import CateModel from "../model/CateModel.js";
 import UserModel from "../model/userModel.js";
+import * as cheerio from "cheerio";
+import axios from "axios";
 async function GetAccount(userId) {
   if (!userId) throw new Error("Thiếu dữ liệu ");
   const account = await UserModel.findById(userId).select("permission");
@@ -138,6 +140,79 @@ class BlogController {
       res.status(200).json(listBlogs);
     } catch (err) {
       res.status(200).json([]);
+    }
+  }
+  async handleSearchPage(req, res) {
+    try {
+      const search = req.body.data;
+
+      const listBlogs = await blogModel
+        .find({ $text: { $search: search }, status: true })
+        .populate({ path: "author", select: "fullname avatar" })
+        .populate({ path: "category", select: "cate slug" });
+      res.status(200).json(listBlogs);
+    } catch (err) {
+      res.status(200).json([]);
+    }
+  }
+  async CrawLinkBlog(req, res) {
+    try {
+      const link = req.body.data;
+      const result = await axios.get(link, {
+        crossdomain: true,
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Accept: "*",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Headers": "*",
+          "Access-Control-Allow-Headers": "*",
+        },
+      });
+      const html = await result.data;
+
+      const $ = cheerio.load(html);
+      const title =
+        $("h1").text().replace(/\s{2}/g, " ")?.trim() ||
+        $("title").text().replace(/\s{2}/g, " ")?.trim();
+      const image = $('meta[property="og:image"]').attr("content");
+      const des = $('meta[name="description"]').attr("content");
+      const listImageCover = [];
+      $("img[src]").each((i, img) => {
+        const src = $(img).attr("src");
+
+        if (src) {
+          listImageCover.push(src);
+        }
+      });
+
+      const paragraphs = [];
+      $("p").each((index, element) => {
+        const paragraphText = $(element).text()?.trim().replace(/\s{2}/, " ");
+        const regex = /((http|https):\/\/[^\s]+)/g;
+        const links = paragraphText.match(regex);
+        if (links && links[0]) {
+          links.forEach((link) => {
+            if (isImageLink(link)) {
+              paragraphs.push(`linkimage${link}linkimage`);
+            } else
+              paragraphs.push(
+                `<a href="${link}" target="_blank" rel="noopener noreferrer">${link}</a>`
+              );
+          });
+        }
+        paragraphText && paragraphs.push(`<p >${paragraphText}</p><br/>`);
+      });
+
+      return res.status(201).json({
+        title,
+        image,
+        des,
+        source: link,
+        content: paragraphs.join("").replace(/\s{2}/g, " "),
+        listImageCover: Array.from(new Set(listImageCover)),
+      });
+    } catch (err) {
+      res.status(404).json(err.message);
     }
   }
 }

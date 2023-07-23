@@ -8,9 +8,9 @@ Content-Type:  application/json
 }
 
 ###
-POST http://localhost:5000/blog/admin/search
+POST http://localhost:5000/blog/admin/craw
 Content-Type:  application/json
 
 {
-  "data":{"search":"lực","userId":"649eb8529eeb9ff7df44758b"}
+  "data":"https://thanhnien.vn/that-nghiep-la-di-lam-mang-xa-hoi-doi-khong-nhu-la-mo-185230721014427714.htm?utm_source=coccoc&utm_medium=ccnews"
 }

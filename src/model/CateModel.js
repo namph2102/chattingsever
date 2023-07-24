@@ -10,7 +10,10 @@ const CateSchema = new Schema(
       ref: "User",
     },
     des: { type: String, default: "" },
-    image: { type: String, default: "" },
+    image: {
+      type: String,
+      default: "https://blog.zecky.online/opengraph-image.png",
+    },
     pathImage: { type: String, default: "" },
   },
   { timestamps: true }

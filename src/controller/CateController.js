@@ -8,6 +8,9 @@ class CateController {
       if (isCheck) {
         throw new Error(`Đã tồn tại danh mục ${newCate.cate}`);
       }
+      newCate.des =
+        newCate.cate +
+        " được cập nhật tin nóng online Việt Nam và thế giới mới nhất trong ngày";
       const newCateCreate = await CateModel.create(newCate);
 
       res

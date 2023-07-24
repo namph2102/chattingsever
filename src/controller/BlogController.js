@@ -3,7 +3,7 @@ import CateModel from "../model/CateModel.js";
 import UserModel from "../model/userModel.js";
 import * as cheerio from "cheerio";
 import axios from "axios";
-async function GetAccount(userId) {
+export async function GetAccount(userId) {
   if (!userId) throw new Error("Thiếu dữ liệu ");
   const account = await UserModel.findById(userId).select("permission");
   if (!account) throw new Error("tài khoản khồng tại");

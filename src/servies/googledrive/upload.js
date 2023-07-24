@@ -88,6 +88,7 @@ class GoogleDrive {
       await driveService.files.delete({
         fileId: fileId,
       });
+      console.log("Xóa file ảnh thành công");
     } catch (error) {
       console.error("Lỗi xóa file:", error.message);
     }

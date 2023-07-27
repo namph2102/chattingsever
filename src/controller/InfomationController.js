@@ -158,5 +158,12 @@ class InfomationController {
       res.status(404).json({ message: err.message });
     }
   }
+  async handleDeleteNotice(req, res) {
+    const id = req.params.id;
+
+    if (!id) throw new Error("Thiếu dữ liệu");
+    await InfoModel.findOneAndDelete(id);
+    res.status(200).json("Xóa thành công thông báo");
+  }
 }
 export default new InfomationController();

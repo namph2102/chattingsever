@@ -11,7 +11,10 @@ const userSchema = new Schema(
       required: true,
       unique: [true, "tài khoản đã tồn tại !"],
     },
-    avatar: { type: String, default: "/images/defaultlavata.png" },
+    avatar: {
+      type: String,
+      default: "http://flixtv.volkovdesign.com/admin/img/user.svg",
+    },
     background: { type: String, default: "/images/background.png" },
     password: { type: String, required: true },
     permission: { type: String, default: "member" },
@@ -31,6 +34,8 @@ const userSchema = new Schema(
     favorites: [{ type: Schema.Types.ObjectId, default: [], ref: "User" }],
     listFollows: [{ type: Schema.Types.ObjectId, default: [], ref: "User" }],
     rooms: [{ type: Schema.Types.ObjectId, default: [], ref: "Room" }],
+    joinWeb: { type: Number, default: 1 },
+    timeOff: { type: String, default: new Date().toISOString() },
   },
   { timestamps: true, autoIndex: true }
 );

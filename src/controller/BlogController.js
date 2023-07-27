@@ -1,6 +1,7 @@
 import blogModel from "../model/blogModel.js";
 import CateModel from "../model/CateModel.js";
 import UserModel from "../model/userModel.js";
+import InfoModel from "../model/InfoModel.js";
 import * as cheerio from "cheerio";
 import axios from "axios";
 export async function GetAccount(userId) {
@@ -26,10 +27,26 @@ class BlogController {
 
   async allblogDashboard(req, res) {
     try {
-      const { limit = 10, skip = 0, userId = "" } = req.body.data;
+      const {
+        limit = 10,
+        skip = 0,
+        userId = "",
+        authorID = "",
+      } = req.body.data;
+
       const account = await GetAccount(userId);
       const isBoss = account.permission == "zecky";
-      const SubFind = isBoss ? {} : { author: account._id };
+      let SubFind = {};
+      if (!authorID) {
+        if (!isBoss) {
+          SubFind = { author: account._id };
+        }
+      } else if (isBoss && authorID) {
+        SubFind = { author: authorID };
+      } else {
+        SubFind = { author: account._id };
+      }
+
       const total = await blogModel.find(SubFind).count();
 
       const [{ totalView = 0 }] = await blogModel.aggregate([
@@ -76,6 +93,7 @@ class BlogController {
         },
         { $sample: { size: 6 } },
       ]);
+
       const listCate = (await CateModel.find()) || [];
       res.status(200).json({ data: blog, listBlogRandom, listCate });
     } catch (err) {
@@ -96,6 +114,13 @@ class BlogController {
       }
 
       const newBlog = await blogModel.create(data);
+      await InfoModel.create({
+        userSend: data.author,
+        userAccept: data.author,
+        type: 8,
+        status: data.status,
+        message: `Bạn đã tạo bài viết "${data.title}" thành công`,
+      });
       return res.status(201).json({
         statusCode: 201,
         message: "Thêm thành công bài viết",
@@ -109,6 +134,7 @@ class BlogController {
     try {
       const { data, idBlog } = req.body.data;
       await blogModel.findByIdAndUpdate(idBlog, data);
+
       res.status(200).json("Chỉnh sửa thành công");
     } catch (err) {
       console.log(err);

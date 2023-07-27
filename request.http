@@ -1,16 +1,11 @@
 
 ###
-POST http://localhost:5000/blog/admin/blog
+POST http://localhost:5000/admin/fullaccount
 Content-Type:  application/json
 
 {
-  "data":{"limit":1,"skip":0,"userId":"64996ff8617d55e8b12046c3"}
-}
-
-###
-POST http://localhost:5000/blog/admin/craw
-Content-Type:  application/json
-
-{
-  "data":"https://thanhnien.vn/that-nghiep-la-di-lam-mang-xa-hoi-doi-khong-nhu-la-mo-185230721014427714.htm?utm_source=coccoc&utm_medium=ccnews"
+    "data":{
+        "limit":7,
+        "skip":0
+    }
 }

@@ -21,11 +21,21 @@ class UserChatSocket {
                 CommentModel.findByIdAndUpdate(id, {
                   file: [],
                   type: "text",
-                }).then((result) => {
+                }).then(async (result) => {
                   if (typeChatting == "audio" || typeChatting == "document") {
                     if (result.comment) {
-                      GoogleDrive.deletefile(result.comment);
+                      await GoogleDrive.deletefile(result.comment);
                     }
+                  }
+                  if (
+                    result.type == "image" &&
+                    result.file &&
+                    result.file.length > 0
+                  ) {
+                    result.file.forEach(
+                      async ({ path }) =>
+                        path && (await GoogleDrive.deletefile(path))
+                    );
                   }
                 });
               }

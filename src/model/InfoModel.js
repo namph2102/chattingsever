@@ -8,7 +8,9 @@ const { Schema, model, models } = pkg;
  * 4 Thông báo lên người nhận là mời tham gia room;
  * 5  nếu true là chấp nhập join room , false là từ chuối
  * 6  thông báo người gửi đã làm cái gì đó;
- * 7 
+ * 7  thông báo bên trang admin  ()
+ *  8  thông báo tạo bài viết thành công
+ *
  */
 const infoSchema = new Schema(
   {

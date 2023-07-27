@@ -5,6 +5,7 @@ import InfoRouter from "./infoRouter.js";
 import BlogRouter from "./blogRouter.js";
 import CateRouter from "./cateRouter.js";
 import Adminrouter from "./adminRouter.js";
+import ErrorHandler from "../middleware/ErrorHandle.js";
 
 function AllRouter(app) {
   app.use("/user", UserRouter);
@@ -14,5 +15,6 @@ function AllRouter(app) {
   app.use("/blog", BlogRouter);
   app.use("/cate", CateRouter);
   app.use("/admin", Adminrouter);
+  app.use(ErrorHandler);
 }
 export default AllRouter;

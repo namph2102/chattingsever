@@ -115,8 +115,9 @@ class handleSocketCall {
     socket.on("client-acttaced-id", async (userid) => {
       socket.join(userid);
       socket.userid = userid;
-      const account = await UserModel.findByIdAndUpdate(userid, {
+      await UserModel.findByIdAndUpdate(userid, {
         status: true,
+        timeOff: new Date().toISOString(),
       });
       socket.broadcast.emit(`friend-chattings-${userid}`, true);
       if (socket.currentroom) {
@@ -134,7 +135,10 @@ class handleSocketCall {
   }
   async handleUserOffline(id) {
     try {
-      await UserModel.findByIdAndUpdate(id, { status: false });
+      await UserModel.findByIdAndUpdate(id, {
+        status: false,
+        timeOff: new Date().toISOString(),
+      });
     } catch {}
   }
   async handleUserAddFriends(socket) {

@@ -10,10 +10,16 @@ class Authentication {
         // check token có trong db ko
         const account = await UserModel.findOneAndUpdate(
           { accessToken },
-          { status: true }
+          {
+            status: true,
+            $inc: { joinWeb: 1 },
+            timeOff: new Date().toISOString(),
+          }
         );
         if (!account) {
           throw new Error("Không tồn tại token này!");
+        } else if (account.blocked) {
+          throw new Error("Tài khoản đã bị khóa");
         }
 
         const result = EncodeHandle.verifyToken(accessToken);
@@ -53,12 +59,34 @@ class Authentication {
       console.log("Đang Xác thực tài khoản");
       if (accessToken) {
         // check token có trong db ko
-        const account = await UserModel.findOneAndUpdate(
-          { accessToken },
-          { status: true }
-        );
+        const account = await UserModel.findOne({
+          accessToken,
+          blocked: false,
+        });
 
         if (account && account.permission !== "member") {
+          console.log(" Xác thực tài khoản thành công");
+          next();
+        }
+      }
+      console.log(" Xác thực tài khoản thành công");
+    } catch (err) {
+      console.log("Bạn ko phải là quản trị viên");
+      console.log(err.message);
+    }
+  }
+  async AccuracyOnlyZecky(req, res, next) {
+    try {
+      const [_, accessToken] = req.headers["authorization"].split(" ");
+      console.log("Đang Xác thực tài khoản");
+      if (accessToken) {
+        // check token có trong db ko
+        const account = await UserModel.findOne({
+          accessToken,
+          blocked: false,
+        });
+
+        if (account && account.permission == "zecky") {
           console.log(" Xác thực tài khoản thành công");
           next();
         }

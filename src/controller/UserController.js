@@ -1,6 +1,6 @@
 import UserModel from "../model/userModel.js";
 import NotifyModel from "../model/InfoModel.js";
-import RoomModel from "../model/RoomModel.js";
+
 import EncodeHandle from "../auth/token.js";
 
 class Usercontroller {
@@ -202,13 +202,13 @@ class Usercontroller {
         (await UserModel.findById(idUser)
           .populate({
             path: "friends",
-            select: "fullname avatar status updatedAt",
+            select: "fullname avatar status updatedAt timeOff",
           })
           .populate({
             path: "rooms",
             populate: {
               path: "listUser role",
-              select: "fullname avatar status updatedAt status",
+              select: "fullname avatar status updatedAt status timeOff",
             },
             select: "listUser type name avatar des",
           })

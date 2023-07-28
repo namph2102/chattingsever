@@ -18,11 +18,7 @@ class UserChatSocket {
           }).then((result) => {
             if (typeChatting != "text") {
               if (userId == result.author) {
-                //  {
-                //   file: [],
-                //   type: "text",
-                // }
-                CommentModel.findOneAndDelete(id).then(async (result) => {
+                CommentModel.findByIdAndDelete(id).then(async (result) => {
                   if (typeChatting == "audio" || typeChatting == "document") {
                     if (result.comment) {
                       await GoogleDrive.deletefile(result.comment);

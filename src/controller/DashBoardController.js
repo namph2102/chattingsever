@@ -6,6 +6,17 @@ import UserModel from "../model/userModel.js";
 import RoomModel from "../model/RoomModel.js";
 import { GetAccount } from "./BlogController.js";
 import GoogleDrive from "../servies/googledrive/upload.js";
+import EncodeHandle from "../auth/token.js";
+
+const createInfomation = async (from, to, message, status = true, type = 8) => {
+  return await InfoModel.create({
+    userSend: from,
+    userAccept: to,
+    type,
+    status: status,
+    message,
+  });
+};
 const idZeckyAdmin = process.env.ID_ADMIN_ZECKY || "649eb8529eeb9ff7df44758b";
 class DashBoardController {
   async homepage(req, res) {
@@ -73,11 +84,11 @@ class DashBoardController {
   async getListnotice(req, res) {
     const { idAccount, limit = 10, skip = 0 } = await req.body.data;
     const totalNotice = await InfoModel.find({
-      type: { $gt: 0 },
+      type: { $gt: 7 },
       userSend: idAccount,
     }).count();
     const listNotice = await InfoModel.find({
-      type: { $gt: 0 },
+      type: { $gt: 7 },
       userSend: idAccount,
     })
       .sort({ createdAt: -1 })
@@ -129,15 +140,24 @@ class DashBoardController {
   }
   async UpdateAccount(req, res) {
     const { info, idAccount } = req.body.data;
-    console.log(info);
+
     if (!info || !idAccount) {
       throw new Error("Thiếu dữ liệu");
     }
-    const account = await UserModel.findByIdAndUpdate(idAccount, info);
-
-    if (!account) {
-      throw new Error("Update  tải khoản thất bại");
+    if (info.password) {
+      info.password = await EncodeHandle.generatePassword(info.password);
     }
+    console.log(info);
+    const account = await UserModel.findByIdAndUpdate(idAccount, info);
+    await createInfomation(
+      idZeckyAdmin,
+      idZeckyAdmin,
+      `Bạn đã thay đổi thông tin  tài khoản  ${account.username} thành công`
+    );
+    if (!account) {
+      throw new Error("thay đổi  tải khoản thất bại");
+    }
+
     res.status(200).json(info);
   }
   async deleteAccount(req, res) {
@@ -194,7 +214,7 @@ class DashBoardController {
       { role: idZeckyAdmin, $push: { listUser: idZeckyAdmin } }
     );
 
-    const result = await Promise.all([
+    await Promise.all([
       async1,
       async2,
       async3,
@@ -203,8 +223,89 @@ class DashBoardController {
       async6,
       async7,
       async8,
+      createInfomation(
+        idZeckyAdmin,
+        idZeckyAdmin,
+        `Bạn đã xóa tài khoản ${account.fullname} thành công `
+      ),
     ]);
+
     return res.status(202).json(`Xóa thành công ${account.fullname}`);
+  }
+  async listcommentDocument(req, res) {
+    const idAccount = await req.body.data;
+    const listcommentfile =
+      (await CommetModel.find({
+        author: idAccount,
+        type: { $in: ["image", "document"] },
+      })) || [];
+
+    res.status(200).json(listcommentfile);
+  }
+  async getAllListFileGoogleDrive(req, res) {
+    const listFile = await GoogleDrive.getAllist();
+    return res.status(200).json(listFile);
+  }
+  async deleteOneDocument(req, res) {
+    const { idComment, path, fileName } = await req.body.data;
+    const comment = await CommetModel.findByIdAndUpdate(idComment, {
+      $pull: { file: { path: path } },
+    });
+    if (comment) {
+      if (comment?.file?.length == 1) {
+        await CommetModel.findByIdAndUpdate(idComment, {
+          comment: "Quản trị viên đã xóa bình luận này!",
+          type: "text",
+        });
+      }
+      const async1 = GoogleDrive.deletefile(path);
+      const async2 = createInfomation(
+        idZeckyAdmin,
+        comment.author,
+        `đã xóa tài liệu ${fileName}`,
+        true,
+        6
+      );
+      await Promise.all([async1, async2]);
+    }
+    res.status(201).json("Xóa thành công 1 tài liệu");
+  }
+  async deleteDocumentComment(req, res) {
+    const idComment = await req.params.idComment;
+    const comment = await CommetModel.findByIdAndDelete(idComment);
+    if (comment?.file) {
+      createInfomation(
+        idZeckyAdmin,
+        idZeckyAdmin,
+        `Bạn đã xóa nội dung bình luận ${comment.message}`,
+        true,
+        8
+      );
+      comment.file.forEach(async (item) => {
+        item.path && (await GoogleDrive.deletefile(item.path));
+      });
+    }
+    res.status(202).json("Xóa thành công");
+  }
+  async deleteNotice(req, res) {
+    const idUser = req.params.idUser;
+    const result = await InfoModel.deleteMany({
+      $or: [{ userSend: idUser }, { userAccept: idUser }],
+    });
+    if (result) {
+      await createInfomation(
+        idZeckyAdmin,
+        idUser,
+        `đã xóa toàn bộ thông báo của bạn`,
+        true,
+        6
+      );
+    }
+    res.status(200).json("Xóa tất cà thông báo thành công");
+  }
+  async deleteAllNotice(req, res) {
+    await InfoModel.deleteMany({});
+    res.status(200).json("Xóa tất cà thông báo thành công");
   }
 }
 export default new DashBoardController();

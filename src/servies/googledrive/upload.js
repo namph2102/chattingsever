@@ -19,6 +19,10 @@ const driveService = google.drive({
   auth: authenticateGoogle(),
 });
 class GoogleDrive {
+  async getAllist() {
+    const { data } = await driveService.files.list();
+    return data.files;
+  }
   async uploadfile(file) {
     try {
       const createfile = await driveService.files.create({

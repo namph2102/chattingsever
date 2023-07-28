@@ -4,6 +4,7 @@ import Authentication from "../auth/Authentication.js";
 const router = express.Router();
 //blog
 router
+  .post("/topblog", BlogController.getTopBlog)
   .get("/allblog", BlogController.getAllblogStatusTrue)
   .post("/admin/blog", BlogController.allblogDashboard)
   .post("/create", Authentication.AccuracyPermission, BlogController.CreateBlog)

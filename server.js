@@ -59,11 +59,9 @@ AllRouter(app);
 // SET STORAGE
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    console.log("file", file);
     cb(null, path.join(__dirname, "public"));
   },
   filename: function (req, file, cb) {
-    console.log("file", file);
     cb(null, file.originalname);
   },
 });
@@ -89,13 +87,14 @@ app.post("/upload", upload.single("file"), async (req, res) => {
       fileUpload.size = req.file.size / 1024;
       let fileInform = {};
       if (fileUpload.size / 1024 >= maxFileSize) {
+        await DeleteFileInServer(fileUpload.path);
         throw new Error("Dung lượng  File phải nhỏ hơn 100MB");
       } else {
         fileInform = await GoogleDrive.UploadFileMore(fileUpload);
+        await DeleteFileInServer(fileUpload.path);
       }
 
       // Xóa file tạm trên sever
-      DeleteFileInServer(fileUpload.path);
 
       if (!fileInform.path) throw new Error("Upload không thành công");
       return res

@@ -11,6 +11,21 @@ export async function GetAccount(userId) {
   return account;
 }
 class BlogController {
+  async getTopBlog(req, res) {
+    try {
+      const limit = req.body?.data || 100;
+      const listBlog =
+        (await blogModel
+          .find({ status: true })
+          .sort({ view: -1 })
+          .limit(limit)
+          .populate({ path: "author", select: "fullname avatar" })
+          .populate({ path: "category", select: "cate slug" })) || [];
+      res.status(200).json(listBlog);
+    } catch {
+      res.stauts.json([]);
+    }
+  }
   async getAllblogStatusTrue(req, res) {
     try {
       const listBlog =

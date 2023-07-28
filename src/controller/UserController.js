@@ -154,6 +154,9 @@ class Usercontroller {
           const listToken = await EncodeHandle.refreshToken(username);
           account.accessToken = listToken.accessToken;
           account.refreshToken = listToken.refreshToken;
+          if (account.blocked) {
+            throw new Error("Tài khoản bạn đã bị khóa!");
+          }
 
           return res.status(200).json({
             account,
@@ -185,6 +188,9 @@ class Usercontroller {
         account.accessToken = listToken.accessToken;
         account.refreshToken = listToken.refreshToken;
         delete account.password;
+        if (account.blocked) {
+          throw new Error("Tài khoản bạn đã bị khóa!");
+        }
         return res
           .status(200)
           .json({ account, message: "Đăng nhập thành công" });

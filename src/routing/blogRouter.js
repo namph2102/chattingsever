@@ -10,7 +10,11 @@ router
   .post("/create", Authentication.AccuracyPermission, BlogController.CreateBlog)
   .post("/detail", BlogController.getBlog)
   .post("/admin/search", BlogController.handleSearchDashboard)
-  .post("/admin/craw", BlogController.CrawLinkBlog)
+  .post(
+    "/admin/craw",
+    Authentication.AccuracyPermission,
+    BlogController.CrawLinkBlog
+  )
   .post("/search", BlogController.handleSearchPage)
   .delete(
     "/admin/delete/:blogid",

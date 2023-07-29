@@ -1,5 +1,6 @@
 import CateModel from "../model/CateModel.js";
 import blogModel from "../model/blogModel.js";
+
 class CateController {
   async createCate(req, res) {
     try {
@@ -38,7 +39,7 @@ class CateController {
       if (!category) throw new Error("Không tồn tại danh mục này");
 
       const listBlogRandom = await blogModel
-        .find({ category: category._id })
+        .find({ category: category._id, status: true })
         .sort({ view: -1 })
         .limit(30);
       const listCate = (await CateModel.find()) || [];
@@ -50,6 +51,38 @@ class CateController {
       console.log(err.message);
       res.status(200).json({ data: "", listBlogRandom: [] });
     }
+  }
+  async getListCateAdmin(req, res) {
+    const listCateCount = await blogModel.aggregate([
+      {
+        $group: {
+          _id: "$category",
+          totalCate: {
+            $sum: "$qty",
+          },
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    const listcate = await CateModel.find({}).populate({
+      path: "author",
+      select: "fullname",
+    });
+    res.status(200).json({ listcate, listCateCount });
+  }
+  async updateCateAdmin(req, res) {
+    const { info, idCate } = await req.body.data;
+    const result = await CateModel.findByIdAndUpdate(idCate, info);
+    if (result) {
+      res.status(200).json("Thay đổi danh mục thành công");
+      return;
+    }
+    res.status(200).json("Thay đổi  danh mục thất bại");
+  }
+  async deleteCateAdmin(req, res) {
+    const idCate = req.params.idCate;
+    await CateModel.findByIdAndDelete(idCate);
+    res.status(200).json("Xóa danh mục thành công");
   }
 }
 export default new CateController();

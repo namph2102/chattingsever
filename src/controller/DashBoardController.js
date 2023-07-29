@@ -147,7 +147,7 @@ class DashBoardController {
     if (info.password) {
       info.password = await EncodeHandle.generatePassword(info.password);
     }
-    console.log(info);
+
     const account = await UserModel.findByIdAndUpdate(idAccount, info);
     await createInfomation(
       idZeckyAdmin,

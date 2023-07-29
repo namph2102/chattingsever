@@ -10,6 +10,10 @@ export async function GetAccount(userId) {
   if (!account) throw new Error("tài khoản khồng tại");
   return account;
 }
+function isImageLink(url) {
+  const pattern = /\.(jpeg|jpg|png|svg)$/i;
+  return pattern.test(url);
+}
 class BlogController {
   async getTopBlog(req, res) {
     try {
@@ -52,7 +56,11 @@ class BlogController {
       const account = await GetAccount(userId);
       const isBoss = account.permission == "zecky";
       let SubFind = {};
-      if (!authorID) {
+      if (authorID == "true") {
+        SubFind = { status: true };
+      } else if (authorID == "false") {
+        SubFind = { status: false };
+      } else if (!authorID) {
         if (!isBoss) {
           SubFind = { author: account._id };
         }
@@ -174,6 +182,7 @@ class BlogController {
       const account = await GetAccount(userId);
       const isBoss = account.permission == "zecky";
       const SubFind = isBoss ? {} : { author: account._id };
+
       const listBlogs = await blogModel
         .find({ $text: { $search: search }, ...SubFind })
         .populate({ path: "author", select: "fullname avatar" })
@@ -213,8 +222,8 @@ class BlogController {
 
       const $ = cheerio.load(html);
       const title =
-        $("h1").text().replace(/\s{2}/g, " ")?.trim() ||
-        $("title").text().replace(/\s{2}/g, " ")?.trim();
+        $("title").text().replace(/\s{2}/g, " ")?.trim() ||
+        $("h1").text().replace(/\s{2}/g, " ")?.trim();
       const image = $('meta[property="og:image"]').attr("content");
       const des = $('meta[name="description"]').attr("content");
       const listImageCover = [];

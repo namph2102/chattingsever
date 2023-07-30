@@ -64,6 +64,16 @@ router
     "/noticeall",
     Authentication.AccuracyOnlyZecky,
     handleErrorTryCatch(DashBoardController.deleteAllNotice)
+  )
+  .post(
+    "/comment/list",
+    Authentication.AccuracyOnlyZecky,
+    handleErrorTryCatch(DashBoardController.getListComments)
+  )
+  .delete(
+    "/comment/delete/:idComment",
+    Authentication.AccuracyOnlyZecky,
+    handleErrorTryCatch(DashBoardController.deletecomment)
   );
 
 export default router;

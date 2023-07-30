@@ -7,6 +7,7 @@ const blogMoModel = new Schema(
     des: { type: String, require: true },
     image: { type: String, require: true },
     content: { type: String, require: true },
+    keywords: { type: String, default: "zecky" },
     status: { type: Boolean, default: false },
     view: { type: Number, default: 0 },
     category: { type: Schema.Types.ObjectId, require: true, ref: "Cate" },

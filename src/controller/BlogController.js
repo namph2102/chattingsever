@@ -223,9 +223,14 @@ class BlogController {
       const $ = cheerio.load(html);
       const title =
         $("title").text().replace(/\s{2}/g, " ")?.trim() ||
-        $("h1").text().replace(/\s{2}/g, " ")?.trim();
+        $("h1").text().replace(/\s{2}/g, " ")?.trim() ||
+        $("h2").text().replace(/\s{2}/g, " ")?.trim();
       const image = $('meta[property="og:image"]').attr("content");
       const des = $('meta[name="description"]').attr("content");
+      let keywords = $("meta[keywords]").attr("content");
+      if (!keywords && title.includes(" ")) {
+        keywords = title.split(" ").join(",");
+      }
       const listImageCover = [];
       $("img[src]").each((i, img) => {
         const src = $(img).attr("src");
@@ -257,6 +262,7 @@ class BlogController {
         title,
         image,
         des,
+        keywords,
         source: link,
         content: paragraphs.join("").replace(/\s{2}/g, " "),
         listImageCover: Array.from(new Set(listImageCover)),

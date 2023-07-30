@@ -162,7 +162,7 @@ class DashBoardController {
   }
   async deleteAccount(req, res) {
     const idAccount = req.params.idAccount;
-    console.log(idAccount);
+
     if (idAccount == idZeckyAdmin) {
       throw new Error("Tài khoản duy nhất nắm quyền amdin không thể xóa được");
     }
@@ -306,6 +306,35 @@ class DashBoardController {
   async deleteAllNotice(req, res) {
     await InfoModel.deleteMany({});
     res.status(200).json("Xóa tất cà thông báo thành công");
+  }
+  async getListComments(req, res) {
+    const { author, limit, skip } = await req.body.data;
+    const totalComment = await CommetModel.find({ author: author }).count();
+    const listComments = await CommetModel.find({ author: author })
+      .limit(limit)
+      .skip(skip)
+      .sort({
+        createdAt: 1,
+      });
+    res.status(200).json({ listComments, totalComment });
+  }
+  async deletecomment(req, res) {
+    const idComment = await req.params.idComment;
+    const result = await CommetModel.findByIdAndUpdate(idComment, {
+      type: "text",
+      comment:
+        '<span class="text-sm  italic text-red-400">Quản trị viên đã xóa nội dung này rồi</span>',
+    });
+    if (result?.file && result?.file?.length > 0) {
+      result.file.forEach(async (file) => {
+        file.path && (await GoogleDrive.deletefile(file.path));
+      });
+    }
+    if (result) {
+      res.status(200).json("Xóa thành công nội dung bình luận");
+    } else {
+      res.status(200).json("Không tồn tại bình luận này");
+    }
   }
 }
 export default new DashBoardController();

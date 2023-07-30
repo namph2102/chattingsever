@@ -7,6 +7,7 @@ import RoomModel from "../model/RoomModel.js";
 import { GetAccount } from "./BlogController.js";
 import GoogleDrive from "../servies/googledrive/upload.js";
 import EncodeHandle from "../auth/token.js";
+import CommentModel from "../model/commentModel.js";
 
 const createInfomation = async (from, to, message, status = true, type = 8) => {
   return await InfoModel.create({
@@ -181,12 +182,12 @@ class DashBoardController {
     if (listComment) {
       listComment.forEach(async (item) => {
         if (item.file && item.file.length > 0) {
-          const [{ path }] = item.file;
-          if (path) {
+          item.file.forEach(async (file) => {
+            const { path } = file;
             try {
-              await GoogleDrive.deletefile(path);
+              path && (await GoogleDrive.deletefile(path));
             } catch {}
-          }
+          });
         }
       });
     }
@@ -210,10 +211,28 @@ class DashBoardController {
     const async7 = UserModel.findByIdAndDelete(idAccount);
 
     const async8 = RoomModel.updateMany(
-      { role: idAccount },
+      { role: idAccount, type: "group" },
       { role: idZeckyAdmin, $push: { listUser: idZeckyAdmin } }
     );
-
+    // xóa store
+    const findRoomFollowid = await RoomModel.findByIdAndDelete(idAccount);
+    if (findRoomFollowid) {
+      const listCommentRoom = await CommetModel.find({ room: idAccount });
+      if (listCommentRoom) {
+        listCommentRoom.forEach(async (item) => {
+          if (item.file && item.file.length > 0) {
+            item.file.forEach(async (file) => {
+              const { path } = file;
+              try {
+                path && (await GoogleDrive.deletefile(path));
+              } catch {}
+            });
+          }
+        });
+      }
+      await CommetModel.deleteMany({ room: idAccount });
+    }
+    // end xóa store
     await Promise.all([
       async1,
       async2,
@@ -334,6 +353,44 @@ class DashBoardController {
       res.status(200).json("Xóa thành công nội dung bình luận");
     } else {
       res.status(200).json("Không tồn tại bình luận này");
+    }
+  }
+  async getListRoom(req, res) {
+    const { limit = 8, skip = 0 } = req.body.data;
+    const total = await RoomModel.find({}).count();
+    const listRoom = await RoomModel.find()
+      .populate({ path: "role", select: "fullname" })
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ listRoom, total });
+  }
+  async deleteRoom(req, res) {
+    const idRoom = await req.params.idRoom;
+    const room = await RoomModel.findByIdAndDelete(idRoom);
+    if (room) {
+      const { avatar } = room;
+      if (avatar) {
+        avatar?.path && (await GoogleDrive.deletefile(avatar.path));
+      }
+      const listComment = await CommentModel.find({ room: idRoom });
+      listComment.forEach(async (item) => {
+        if (item.file && item.file.length > 0) {
+          item.file.forEach(async (file) => {
+            const { path } = file;
+            try {
+              path && (await GoogleDrive.deletefile(path));
+            } catch {}
+          });
+        }
+      });
+      const async2 = CommentModel.deleteMany({ room: idRoom });
+      const async1 = UserModel.updateMany({}, { $pull: { rooms: idRoom } });
+      await Promise.all([async1, async2]);
+      res.status(200).json("Xóa thành công phòng này");
+    } else {
+      res.status(200).json("không tìm thấy phòng");
     }
   }
 }

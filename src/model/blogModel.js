@@ -7,7 +7,7 @@ const blogMoModel = new Schema(
     des: { type: String, require: true },
     image: { type: String, require: true },
     content: { type: String, require: true },
-    keywords: { type: String, default: "zecky" },
+    keywords: { type: String, default: "bài viết nổi bật, tin tức, zecky" },
     status: { type: Boolean, default: false },
     view: { type: Number, default: 0 },
     category: { type: Schema.Types.ObjectId, require: true, ref: "Cate" },
@@ -16,7 +16,6 @@ const blogMoModel = new Schema(
     author: {
       type: Schema.Types.ObjectId,
       required: true,
-
       ref: "User",
     },
   },

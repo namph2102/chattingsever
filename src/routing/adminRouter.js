@@ -74,6 +74,16 @@ router
     "/comment/delete/:idComment",
     Authentication.AccuracyOnlyZecky,
     handleErrorTryCatch(DashBoardController.deletecomment)
+  )
+  .post(
+    "/room/list",
+    Authentication.AccuracyOnlyZecky,
+    handleErrorTryCatch(DashBoardController.getListRoom)
+  )
+  .delete(
+    "/room/delete/:idRoom",
+    Authentication.AccuracyOnlyZecky,
+    handleErrorTryCatch(DashBoardController.deleteRoom)
   );
 
 export default router;

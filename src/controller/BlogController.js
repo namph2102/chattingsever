@@ -156,6 +156,7 @@ class BlogController {
   async BlogEdit(req, res) {
     try {
       const { data, idBlog } = req.body.data;
+      console.log(data);
       await blogModel.findByIdAndUpdate(idBlog, data);
 
       res.status(200).json("Chỉnh sửa thành công");

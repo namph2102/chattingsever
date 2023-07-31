@@ -6,7 +6,6 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { engine } from "express-handlebars";
 import multer from "multer";
 //* setting path
 
@@ -17,9 +16,11 @@ import ConnectDatabase from "./src/servies/conectMongoose.js";
 import AllRouter from "./src/routing/index.js";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-import fs from "fs";
+
 // 100mb
-const maxFileSize = 100;
+const maxFileSize = process.env.MAX_FILE_SIZE
+  ? +process.env.MAX_FILE_SIZE
+  : 100;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(fileURLToPath(import.meta.url));
 app.use(express.static(path.join(__dirname, "public")));

@@ -33,7 +33,7 @@ class CateController {
   }
   async getCateSlug(req, res) {
     try {
-      const slug = req.body.data;
+      const { slug, limit } = req.body.data;
 
       const category = await CateModel.findOne({ slug: slug });
       if (!category) throw new Error("Không tồn tại danh mục này");
@@ -41,7 +41,7 @@ class CateController {
       const listBlogRandom = await blogModel
         .find({ category: category._id, status: true })
         .sort({ view: -1 })
-        .limit(30);
+        .limit(limit);
       const listCate = (await CateModel.find()) || [];
 
       res
@@ -50,6 +50,28 @@ class CateController {
     } catch (err) {
       console.log(err.message);
       res.status(200).json({ data: "", listBlogRandom: [] });
+    }
+  }
+  async getBlogFollowCate(req, res) {
+    try {
+      const { slug, limit } = req.body.data;
+
+      const category = await CateModel.findOne({ slug: slug });
+      if (!category) throw new Error("Không tồn tại danh mục này");
+
+      const listBlog =
+        (await blogModel
+          .find({ category: category._id, status: true })
+          .populate({ path: "author", select: "fullname" })
+          .sort({ createdAt: -1 })
+          .limit(limit)
+          .select("slug title view category author  createdAt image des")) ||
+        [];
+
+      res.status(200).json(listBlog);
+    } catch (err) {
+      console.log(err);
+      res.status(200).json([]);
     }
   }
   async getListCateAdmin(req, res) {

@@ -8,6 +8,7 @@ router
   .get("/", CateController.getAllCate)
   .post("/ceate", Authentication.AccuracyPermission, CateController.createCate)
   .post("/getslug", CateController.getCateSlug)
+  .post("/blog/slug", CateController.getBlogFollowCate)
   .get(
     "/admin/listcate",
     Authentication.AccuracyOnlyZecky,

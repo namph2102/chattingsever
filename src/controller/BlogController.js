@@ -24,7 +24,10 @@ class BlogController {
           .sort({ view: -1 })
           .limit(limit)
           .populate({ path: "author", select: "fullname avatar" })
-          .populate({ path: "category", select: "cate slug" })) || [];
+          .populate({ path: "category", select: "cate slug" })
+          .select(
+            "author category createdAt updatedAt title slug des pathImage status view image keywords"
+          )) || [];
       res.status(200).json(listBlog);
     } catch {
       res.stauts.json([]);
@@ -37,7 +40,10 @@ class BlogController {
           .find({ status: true })
           .sort({ view: -1 })
           .populate({ path: "author", select: "fullname avatar" })
-          .populate({ path: "category", select: "cate slug" })) || [];
+          .populate({ path: "category", select: "cate slug" })
+          .select(
+            "author category createdAt updatedAt title slug des pathImage status view image keywords"
+          )) || [];
       res.status(200).json(listBlog);
     } catch (err) {
       res.status(404).json({ message: "Error" });

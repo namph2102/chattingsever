@@ -63,6 +63,7 @@ class CateController {
         (await blogModel
           .find({ category: category._id, status: true })
           .populate({ path: "author", select: "fullname" })
+          .populate("category")
           .sort({ createdAt: -1 })
           .limit(limit)
           .select("slug title view category author  createdAt image des")) ||

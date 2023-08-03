@@ -43,7 +43,7 @@ function shouldCompress(req, res) {
 // app.engine(".hbs", engine({ extname: ".hbs" }));
 // app.set("view engine", ".hbs");
 // app.set("views", "./views");
-// // sử dụng view engine
+
 
 app.use(cookieParser());
 app.use(express.json());

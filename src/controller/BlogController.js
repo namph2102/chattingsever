@@ -66,6 +66,11 @@ class BlogController {
         SubFind = { status: true };
       } else if (authorID == "false") {
         SubFind = { status: false };
+      }else if(authorID.includes('-')){
+        const category=await CateModel.findOne({slug:authorID});
+        if(category._id){
+          SubFind={category:category._id};
+        }
       } else if (!authorID) {
         if (!isBoss) {
           SubFind = { author: account._id };

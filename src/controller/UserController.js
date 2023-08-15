@@ -157,24 +157,32 @@ class Usercontroller {
           if (account.blocked) {
             throw new Error("Tài khoản bạn đã bị khóa!");
           }
+          const totalInfos =
+            (await NotifyModel.find({
+              userAccept: account._id,
+              isSee: false,
+            }).count()) || 0;
 
           return res.status(200).json({
             account,
-            status: "login oke",
+            totalInfos,
+            status: true,
             message: "Đăng nhập thành công!",
           });
         }
       }
       throw new Error("Có lẻ tài khoản và mật khẩu chưa đúng!");
     } catch (err) {
-      res.status(401).json({ message: err.message, status: 401 });
+      res
+        .status(401)
+        .json({ message: err.message, status: 401, totalInfos: 0 });
     }
   }
   async loginWithFireBase(req, res) {
     // nếu id bị trùng thì register thất bại
     try {
       const { uid, username } = req.body.data;
-
+      let totalInfos = 0;
       if (!uid) throw new Error("Tài khoản chưa đăng ký!");
       let account = await UserModel.findOne({ uid });
       if (username) {
@@ -188,12 +196,17 @@ class Usercontroller {
         account.accessToken = listToken.accessToken;
         account.refreshToken = listToken.refreshToken;
         delete account.password;
+        totalInfos = await NotifyModel.find({
+          userAccept: account._id,
+          isSee: false,
+        }).count();
+
         if (account.blocked) {
           throw new Error("Tài khoản bạn đã bị khóa!");
         }
         return res
           .status(200)
-          .json({ account, message: "Đăng nhập thành công" });
+          .json({ account, message: "Đăng nhập thành công", totalInfos });
       }
       throw new Error("Tài khoản chưa đăng ký!");
     } catch (error) {

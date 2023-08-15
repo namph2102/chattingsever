@@ -34,6 +34,7 @@ class InfomationController {
       const infoTowAccount = await InfoModel.findByIdAndUpdate(idInfo, {
         status,
         type,
+        isSee: true,
       });
       if (status && type == 2 && infoTowAccount) {
         const { userSend, userAccept } = infoTowAccount;
@@ -77,6 +78,11 @@ class InfomationController {
     try {
       const { idUser } = req.body;
       if (!idUser) throw new Error("Thiếu dữ liệu");
+      await InfoModel.updateMany(
+        { userAccept: idUser },
+        { isSee: true },
+        { timestamps: false, new: true, upsert: true }
+      );
       const listInfo =
         (await InfoModel.find({
           $or: [{ userSend: idUser }, { userAccept: idUser }],
@@ -164,6 +170,24 @@ class InfomationController {
     if (!id) throw new Error("Thiếu dữ liệu");
     await InfoModel.findOneAndDelete(id);
     res.status(200).json("Xóa thành công thông báo");
+  }
+  async updateAllStatus(req, res) {
+    try {
+      const { userAccept } = req.body;
+
+      await InfoModel.updateMany(
+        { userAccept: userAccept },
+        { isSee: true },
+        { timestamps: false, new: true, upsert: true }
+      );
+      res
+        .status(201)
+        .json({ message: "update notifications sucessfully ", status: true });
+    } catch (err) {
+      res
+        .status(404)
+        .json({ message: "update notifications faild ", status: false });
+    }
   }
 }
 export default new InfomationController();

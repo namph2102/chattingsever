@@ -19,6 +19,7 @@ const infoSchema = new Schema(
     type: { type: Number, default: 1 },
     message: { type: String, default: "" },
     status: { type: Boolean, default: false },
+    isSee: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

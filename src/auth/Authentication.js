@@ -1,6 +1,6 @@
 import UserModel from "../model/userModel.js";
 import EncodeHandle from "./token.js";
-
+import InfoModel from "../model/InfoModel.js";
 class Authentication {
   async firstLogin(req, res) {
     try {
@@ -43,13 +43,24 @@ class Authentication {
           default:
             throw new Error(result.message);
         }
+        const totalInfos =
+          (await InfoModel.find({
+            userAccept: account._id,
+            isSee: false,
+          }).count()) || 0;
 
-        return res
-          .status(200)
-          .json({ account, message: "first login successful", status: 200 });
+        delete account.password;
+
+        return res.status(200).json({
+          account,
+          message: "first login successful",
+          status: 200,
+          totalInfos,
+        });
       }
       throw new Error("Thiếu accesstoken");
     } catch (err) {
+      console.log(err.message);
       res.status(401).json({ message: err.message });
     }
   }
@@ -75,7 +86,7 @@ class Authentication {
   async AccuracyPermission(req, res, next) {
     try {
       const [_, accessToken] = req.headers["authorization"].split(" ");
-      console.log("Đang Xác thực tài khoản");
+
       if (accessToken) {
         // check token có trong db ko
         const account = await UserModel.findOne({
@@ -84,11 +95,9 @@ class Authentication {
         });
 
         if (account && account.permission !== "member") {
-          console.log(" Xác thực tài khoản thành công");
           next();
         }
       }
-      console.log(" Xác thực tài khoản thành công");
     } catch (err) {
       console.log("Bạn ko phải là quản trị viên");
       console.log(err.message);

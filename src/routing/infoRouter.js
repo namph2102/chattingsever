@@ -9,11 +9,6 @@ router
   .post("/notice", InfomationController.getInfoUser)
   .post("/accept/friends", InfomationController.getListInfomationWatingAccept)
   .post("/notice/call", InfomationController.getListCommentCall)
-  .post(
-    "/updatestatus",
-
-    InfomationController.updateAllStatus
-  )
   .delete(
     "/admin/:id",
     Authentication.AccuracyPermission,

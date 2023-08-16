@@ -76,13 +76,19 @@ class InfomationController {
   }
   async getInfoUser(req, res) {
     try {
-      const { idUser } = req.body;
+      const { idUser, limit, skip } = req.body;
       if (!idUser) throw new Error("Thiếu dữ liệu");
-      await InfoModel.updateMany(
-        { userAccept: idUser },
-        { isSee: true },
-        { timestamps: false, new: true, upsert: true }
-      );
+      const [totalNotice = 0] = await Promise.all([
+        InfoModel.find({
+          $or: [{ userSend: idUser }, { userAccept: idUser }],
+        }).count(),
+        InfoModel.updateMany(
+          { userAccept: idUser },
+          { isSee: true },
+          { timestamps: false, new: true, upsert: true }
+        ),
+      ]);
+
       const listInfo =
         (await InfoModel.find({
           $or: [{ userSend: idUser }, { userAccept: idUser }],
@@ -91,12 +97,15 @@ class InfomationController {
           .populate({
             path: "userSend userAccept",
             select: "fullname avatar status",
-          })) || [];
+          })
+          .skip(skip)
+          .limit(limit)) || [];
 
       return res.status(200).json({
         listInfo,
         status: 200,
         message: "oke",
+        totalNotice,
       });
     } catch (err) {
       console.log(err);
@@ -170,24 +179,6 @@ class InfomationController {
     if (!id) throw new Error("Thiếu dữ liệu");
     await InfoModel.findOneAndDelete(id);
     res.status(200).json("Xóa thành công thông báo");
-  }
-  async updateAllStatus(req, res) {
-    try {
-      const { userAccept } = req.body;
-
-      await InfoModel.updateMany(
-        { userAccept: userAccept },
-        { isSee: true },
-        { timestamps: false, new: true, upsert: true }
-      );
-      res
-        .status(201)
-        .json({ message: "update notifications sucessfully ", status: true });
-    } catch (err) {
-      res
-        .status(404)
-        .json({ message: "update notifications faild ", status: false });
-    }
   }
 }
 export default new InfomationController();

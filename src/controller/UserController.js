@@ -10,7 +10,7 @@ class Usercontroller {
   }
   async handleSearch(req, res) {
     try {
-      const { search, listUserExtended, limit = 100 } = req.body;
+      const { search, listUserExtended } = req.body;
 
       if (!search) {
         throw new Error("Dữ liệu thiếu");
@@ -27,68 +27,84 @@ class Usercontroller {
         listUserSearchs =
           (await UserModel.find({
             $text: { $search: search },
-
             _id: { $nin: listUserExtended },
           })
             .select("username fullname avatar status")
-            .limit(limit)
             .sort({ follows: -1 })) || [];
       }
 
       return res.status(200).json({
         listUserSearchs,
         status: 200,
-        messsage: "Tìm thấy user",
+        message: "Tìm thấy user",
       });
     } catch (err) {
-      return res.status(404).json({ messgae: err.message, status: 404 });
+      return res
+        .status(404)
+        .json({ messgae: err?.message || "Lỗi", status: 404 });
     }
   }
   async handleSerachPage(req, res) {
     try {
-      let { search, listUserExtended, listFriend } = req.body;
+      let {
+        search,
+        listUserExtended,
+        listFriend,
+        limit = 8,
+        skip = 0,
+      } = req.body;
 
       if (!search || !listUserExtended || !listFriend) {
         throw new Error("Dữ liệu thiếu");
       }
       let listUserSearchs = [];
-
+      let totalUser = 0;
       if (search == "getall") {
-        listUserSearchs =
-          (await UserModel.find({
-            _id: { $nin: listUserExtended },
-          })
-            .select("username fullname avatar status follows address friends")
-            .populate({
-              path: "follows",
-              match: { _id: { $in: [listFriend] } },
-            })
-            .populate({ path: "friends", select: "avatar fullname" })
-            .sort({ follows: -1 })) || [];
-      } else
-        listUserSearchs =
-          (await UserModel.find({
-            $text: { $search: search },
+        totalUser = await UserModel.find({}).count();
 
-            _id: { $nin: listUserExtended },
+        listUserSearchs = await UserModel.find({
+          _id: { $nin: listUserExtended },
+        })
+          .select("username fullname avatar status follows address friends")
+          .limit(limit)
+          .skip(skip)
+          .populate({
+            path: "follows",
+            match: { _id: { $in: [listFriend] } },
           })
-            .select("username fullname avatar status follows address friends")
-            .populate({
-              path: "follows",
-              match: { _id: { $in: [listFriend] } },
-            })
-            .populate({ path: "friends", select: "avatar fullname" })
-            .sort({ follows: -1 })) || [];
+          .populate({ path: "friends", select: "avatar fullname" })
+          .sort({ follows: -1 });
+      } else {
+        totalUser = await UserModel.find({
+          $text: { $search: search },
+          _id: { $nin: listUserExtended },
+        }).count();
+        listUserSearchs = await UserModel.find({
+          $text: { $search: search },
+
+          _id: { $nin: listUserExtended },
+        })
+          .select("username fullname avatar status follows address friends")
+
+          .populate({
+            path: "follows",
+            match: { _id: { $in: [listFriend] } },
+          })
+          .populate({ path: "friends", select: "avatar fullname" })
+          .limit(limit)
+          .skip(skip)
+          .sort({ follows: -1 });
+      }
       const listInfoSend = await NotifyModel.find({
         userSend: listUserExtended[0],
         type: 1,
       }).select("userAccept");
-
       return res.status(200).json({
         listUserSearchs,
         listInfoSend,
         status: 200,
-        messsage: "Tìm thấy user",
+        totalUser,
+        messsage: "Tìm thấy theo tìm kiếm search tài khoản",
       });
     } catch (err) {
       console.log(err.message);
